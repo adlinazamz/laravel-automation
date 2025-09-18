@@ -7,17 +7,36 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index():View
+    public function index(Request $request): View
     {
-        $products =Product ::latest()-> paginate (5);
+        $query = Product::query();
 
-        return view ('products.index', compact ('products'))-> with ('i', (request()-> input('page', 1)-1)*5);
+        // Convert dd-mm-yyyy to yyyy-mm-dd for filtering
+        // Handle separate date_from and date_to inputs
+        $dateFrom = $request->filled('date_from') ? Carbon::createFromFormat('d-m-Y', $request->input('date_from'))->format('Y-m-d') : null;
+        $dateTo = $request->filled('date_to') ? Carbon::createFromFormat('d-m-Y', $request->input('date_to'))->format('Y-m-d') : null;
+
+        if ($dateFrom && $dateTo) {
+            $query->whereBetween('updated_at', [
+                $dateFrom . ' 00:00:00',
+                $dateTo . ' 23:59:59'
+            ]);
+        } elseif ($dateFrom) {
+            $query->whereDate('updated_at', $dateFrom);
+        } elseif ($dateTo) {
+            $query->whereDate('updated_at', '<=', $dateTo);
+        }
+
+        $products = $query->latest()->paginate(5);
+
+        return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**

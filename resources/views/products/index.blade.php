@@ -5,7 +5,31 @@
 <div class="card mt-5">
   <h2 class="card-header">Laravel 12 CRUD Example from scratch - ItSolutionStuff.com</h2>
   <div class="card-body">
-
+    <!-- Date Filter Form -->
+    <!-- Date Filter Form (From and To) -->
+    <form method="GET" action="{{ route('products.index') }}" class="row g-3 mb-4 align-items-end">
+        <div class="col-auto">
+            <label for="date_from" class="form-label">On</label>
+            <input type="text" id="date_from" name="date_from" class="form-control datepicker" autocomplete="off" value="{{ request('date_from') }}" placeholder="dd-mm-yyyy">
+        </div>
+        <div class="col-auto">
+            <label for="date_to" class="form-label">To (optional)</label>
+            <input type="text" id="date_to" name="date_to" class="form-control datepicker" autocomplete="off" value="{{ request('date_to') }}" placeholder="dd-mm-yyyy">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ route('products.index') }}" class="btn btn-secondary">Reset</a>
+        </div>
+    </form>
+    <script>
+    $(function() {
+        $('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+    });
+    </script>
         @session('success')
             <div class="alert alert-success" role="alert"> {{ $value }} </div>
         @endsession
@@ -30,7 +54,7 @@
             @forelse ($products as $product)
                 <tr>
                     <td>{{ ++$i }}</td>
-                    <td> <img src = "/images/{{$product ->image}}" width ="100px"></td>
+                    <td> <img src="/images/{{$product->image}}" width="100px" class="img-thumbnail open-modal" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="/images/{{$product->image}}"></td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->detail }}</td>
                     <td>{{$product ->updated_at-> format ('d M Y');}}</td>
@@ -61,4 +85,30 @@
 
   </div>
 </div>
+
+<!--modal-->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+              <img id="modalImage" src="" class="img-fluid" alt="Product Image">
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.open-modal').forEach(function(img) {
+        img.addEventListener('click', function() {
+            var modalImg = document.getElementById('modalImage');
+            modalImg.src = this.getAttribute('data-img');
+        });
+    });
+});
+</script>
+
 @endsection
