@@ -34,9 +34,9 @@ class ProductController extends Controller
             $query->whereDate('updated_at', '<=', $dateTo);
         }
 
-        $products = $query->latest()->paginate(5);
+        $products = $query->latest()->paginate(10);
 
-        return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 5);
+        return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -54,7 +54,7 @@ class ProductController extends Controller
     {
         $request-> validate ([
             'name'=>'required',
-            'detail' => 'required',
+            'details' => 'required',
             'image' => 'required|image |mimes: jpeg,png, jpg, svg|max:2048',
         ]);
 
@@ -96,7 +96,7 @@ class ProductController extends Controller
     {
         $request -> validate([
             'name' => 'required',
-            'detail' => 'required'
+            'details' => 'required'
         ]);
 
         $input = $request->all();

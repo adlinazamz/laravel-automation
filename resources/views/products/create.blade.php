@@ -27,14 +27,14 @@
         </div>
 
         <div class="mb-3">
-            <label for="inputDetail" class="form-label"><strong>Detail:</strong></label>
+            <label for="inputDetails" class="form-label"><strong>Details:</strong></label>
             <textarea
-                class="form-control @error('detail') is-invalid @enderror"
+                class="form-control @error('details') is-invalid @enderror"
                 style="height:150px"
-                name="detail"
-                id="inputDetail"
-                placeholder="Detail"></textarea>
-            @error('detail')
+                name="details"
+                id="inputDetails"
+                placeholder="Details"></textarea>
+            @error('details')
                 <div class="form-text text-danger">{{ $message }}</div>
             @enderror
         </div>

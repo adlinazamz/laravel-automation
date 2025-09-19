@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="card mt-5">
-  <h2 class="card-header">Laravel 12 CRUD Example from scratch - ItSolutionStuff.com</h2>
+  <h2 class="card-header">Laravel 10 CRUD from scratch - ItSolutionStuff.com</h2>
   <div class="card-body">
     <!-- Date Filter Form -->
     <!-- Date Filter Form (From and To) -->
@@ -54,9 +54,9 @@
             @forelse ($products as $product)
                 <tr>
                     <td>{{ ++$i }}</td>
-                    <td> <img src="/images/{{$product->image}}" width="100px" class="img-thumbnail open-modal" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="/images/{{$product->image}}"></td>
+                    <td> <img src="{{$product->image}}" width="100px" class="img-thumbnail open-modal" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="{{$product->image}}"></td>
                     <td>{{ $product->name }}</td>
-                    <td>{{ $product->detail }}</td>
+                    <td>{{ $product->detail}}</td>
                     <td>{{$product ->updated_at-> format ('d M Y');}}</td>
                     <td>
                         <form action="{{ route('products.destroy',$product->id) }}" method="POST">
