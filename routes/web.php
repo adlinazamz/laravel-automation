@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +37,8 @@ Route::get('/products/{products}', [App\Http\Controllers\ProductsController::cla
 Route::get('/products/{products}/edit', [App\Http\Controllers\ProductsController::class, 'edit'])->name('products.edit');
 Route::put('/products/{products}', [App\Http\Controllers\ProductsController::class, 'update'])->name('products.update');
 Route::delete('/products/{products}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('products.destroy');
-
+Route::get('/products-export', [ProductController::class, 'export'])->name('products.export');
+Route::post('/products-import', [ProductController::class, 'import'])->name('products.import');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

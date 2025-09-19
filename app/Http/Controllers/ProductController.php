@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Exports\ProductExport;
+use App\Imports\ProductImport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -37,6 +40,25 @@ class ProductController extends Controller
         $products = $query->latest()->paginate(10);
 
         return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    //export xls function
+    public function export() 
+    {
+    return Excel::download(new ProductExport, 'products.xlsx');
+    }
+
+    //import xls function
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls'
+        ]);
+
+    Excel::import(new ProductImport, $request->file('file'));
+
+        return redirect()->route('products.index')
+                         ->with('success', 'Products imported successfully.');
     }
 
     /**

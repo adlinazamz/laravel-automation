@@ -5,8 +5,22 @@
 <div class="card mt-5" id="product-index-container">
   <h2 class="card-header">Laravel 10 CRUD from scratch - ItSolutionStuff.com</h2>
   <div class="card-body">
+
+    <!-- Import/Export Section -->
+    <div class="row mb-4 align-items-end">
+        <div class="col-md-6">
+            <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
+                @csrf
+                <input type="file" name="file" class="form-control" style="max-width: 200px;">
+                <button class="btn btn-success"><i class="fa fa-file"></i> Import Products</button>
+            </form>
+        </div>
+        <div class="col-md-6 text-end">
+            <a class="btn btn-info" href="{{ route('products.export') }}"><i class="fa fa-download"></i> Export Products</a>
+        </div>
+    </div>
+
     <!-- Date Filter Form -->
-    <!-- Date Filter Form (From and To) -->
     <form method="GET" action="{{ route('products.index') }}" class="row g-3 mb-4 align-items-end">
         <div class="col-auto">
             <label for="date_from" class="form-label">On</label>
@@ -40,7 +54,9 @@
         </div>
 
         <table class="table table-bordered table-striped mt-4">
-            <thead>
+            <tr>
+            <th colspan="6"> List of Products </th>
+            </tr>
                 <tr>
                     <th width="80px">No</th>
                     <th>Image</th>
