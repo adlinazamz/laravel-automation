@@ -7,7 +7,8 @@
   <div class="card-body">
 
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <a class="btn btn-primary btn-sm" href="{{ route('products.index') }}"><i class="fa fa-arrow-left"></i> Back</a>
+        <a class="btn btn-primary btn-sm" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        <a class="btn btn-secondary btn-sm" href="{{ route('products.index') }}"><i class="fa fa-arrow-left"></i> Back to Products</a>
     </div>
 
     <form action="{{ route('products.update',$product->id) }}" method="POST" enctype="multipart/form-data">
@@ -23,7 +24,7 @@
                 name="image"
                 class="form-control @error('image') is-invalid @enderror"
                 id="inputImage">
-            <img src = '/images/{{ $product->image }}' width  ="300px">
+            <img src = '{{ $product->image }}' width  ="300px">
             @error('image')
                 <div class="form-text text-danger">{{ $message }}</div>
             @enderror

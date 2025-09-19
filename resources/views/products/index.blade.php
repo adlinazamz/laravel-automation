@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="card mt-5">
+<div class="card mt-5" id="product-index-container">
   <h2 class="card-header">Laravel 10 CRUD from scratch - ItSolutionStuff.com</h2>
   <div class="card-body">
     <!-- Date Filter Form -->
@@ -35,6 +35,7 @@
         @endsession
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary btn-sm" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
             <a class="btn btn-success btn-sm" href="{{ route('products.create') }}"> <i class="fa fa-plus"></i> Create New Product</a>
         </div>
 
