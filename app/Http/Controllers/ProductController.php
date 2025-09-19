@@ -76,8 +76,8 @@ class ProductController extends Controller
     {
         $request-> validate ([
             'name'=>'required',
-            'details' => 'required',
-            'image' => 'required|image |mimes: jpeg,png, jpg, svg|max:2048',
+            'detail' => 'required',
+            'image' => 'required|image |mimes: png, jpg|max:2048',
         ]);
 
         $input = $request -> all();
@@ -118,7 +118,7 @@ class ProductController extends Controller
     {
         $request -> validate([
             'name' => 'required',
-            'details' => 'required'
+            'detail' => 'required'
         ]);
 
         $input = $request->all();

@@ -20,6 +20,7 @@
         </div>
     </div>
 
+
     <!-- Date Filter Form -->
     <form method="GET" action="{{ route('products.index') }}" class="row g-3 mb-4 align-items-end">
         <div class="col-auto">
@@ -44,6 +45,7 @@
         });
     });
     </script>
+
         @session('success')
             <div class="alert alert-success" role="alert"> {{ $value }} </div>
         @endsession
@@ -71,7 +73,7 @@
             @forelse ($products as $product)
                 <tr>
                     <td>{{ ++$i }}</td>
-                    <td> <img src="{{$product->image}}" width="100px" class="img-thumbnail open-modal" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="{{$product->image}}"></td>
+                    <td> <img src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" width="100px" class="img-thumbnail open-modal" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="{{$product->image}}"></td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->detail}}</td>
                     <td>{{$product ->updated_at-> format ('d M Y');}}</td>

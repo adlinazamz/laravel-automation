@@ -15,10 +15,8 @@
         @csrf
         @method('PUT')
 
-      
-
         <div class="mb-3">
-            <label for="inputImage" class="form-label"><strong>Image</strong></label>
+            <label for="inputImage" class="form-label"><strong>Image:</strong></label>
             <input
                 type="file"
                 name="image"
@@ -46,11 +44,12 @@
         <div class="mb-3">
             <label for="inputDetails" class="form-label"><strong>Details:</strong></label>
             <textarea
-                class="form-control @error('details') is-invalid @enderror"
+                class="form-control @error('detail') is-invalid @enderror"
                 style="height:150px"
-                name="details"
+                name="detail"
                 id="inputDetails"
-                placeholder="Details">{{ $product->details }}</textarea>
+                placeholder="Detail"
+                value ="{{ $product->detail }}"></textarea>
             @error('details')
                 <div class="form-text text-danger">{{ $message }}</div>
             @enderror
