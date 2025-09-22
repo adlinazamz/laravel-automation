@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <meta http-equiv = "X-UA-Compatible" content = "ie=edge">  
+    <title>Dashboard</title>
+    <link rel ="stylesheet" href ="public/style.css">
+</head>
+<body>
+
+    <div class="flex" id="wrapper" x-data="{isOpen:true}">
+        <div id ="sidebar" class ="h-screen overflow-y-auto bg-gray-800 transition-all duration-200"
+        :class ="isOpen?'w-48':'w-0'">
+            <div class = "w-full h-auto p-4 flex justify-end">
+            </div>
+            <ul>
+                <li>Products</li>
+            </ul>
+            </div>
+        <div id ="body" class ="w-full h-screen overflow-y-auto bg-red-400 transition-all duration-200">
+            <div class = "w-full h-auto p-4 flex justify-start bg-gray-800">
+                <button @click.prevent="isOpen = !isOpen">x</button>
+            </div>
+<!--body if needed -->
+            <div class ="p-2">
+                <p> </p>
+            </div>
+        </div>
+    </div>
+    <script src ="public/script.js"></script>
+</body>
+</html>

@@ -38,6 +38,7 @@ Route::put('/products/{product}', [App\Http\Controllers\ProductController::class
 Route::delete('/products/{product}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('products.destroy');
 //import export excel
 Route::get('/products-export',[App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
-Route::post('/products-import',[App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
+Route::post('/products-import', [App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
+
 
 require __DIR__.'/auth.php';
