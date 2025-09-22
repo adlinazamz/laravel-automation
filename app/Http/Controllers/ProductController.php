@@ -74,10 +74,10 @@ class ProductController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request-> validate ([
-            'name'=>'required',
+        $request->validate([
+            'name' => 'required',
             'detail' => 'required',
-            'image' => 'required|image |mimes: png, jpg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $input = $request -> all();
