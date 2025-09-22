@@ -22,7 +22,7 @@
                 name="image"
                 class="form-control @error('image') is-invalid @enderror"
                 id="inputImage">
-            <img src = '{{ $product->image }}' width  ="300px">
+            <img src = "{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" width  ="300px">
             @error('image')
                 <div class="form-text text-danger">{{ $message }}</div>
             @enderror

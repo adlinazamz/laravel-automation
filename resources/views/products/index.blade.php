@@ -1,5 +1,4 @@
 @extends('products.layout')
-
 @section('content')
 
 <div class="card mt-5" id="product-index-container">
@@ -78,16 +77,12 @@
                     <td>{{ $product->detail}}</td>
                     <td>{{$product ->updated_at-> format ('d M Y');}}</td>
                     <td>
-                        <form action="{{ route('products.destroy',$product->id) }}" method="POST">
-
+                        <form action="{{ route('products.destroy',$product->id) }}" method="POST" id="deleteForm{{$product->id}}">
                             <a class="btn btn-info btn-sm" href="{{ route('products.show',$product->id) }}"><i class="fa-solid fa-list"></i> Show</a>
-
                             <a class="btn btn-primary btn-sm" href="{{ route('products.edit',$product->id) }}"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
-
                             @csrf
                             @method('DELETE')
-
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Delete</button>
+                            <button type="button" class="btn btn-xs btn-danger btn-flat show_confirm" data-toggle ="tooltip" title='Delete'> Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -105,7 +100,8 @@
   </div>
 </div>
 
-<!--modal-->
+@section('scripts')
+<!--modal image-->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -113,11 +109,33 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body text-center">
-              <img id="modalImage" src="" class="img-fluid" alt="Product Image">
+              <img id="modalImage" src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" class="img-fluid" alt="Product Image">
           </div>
       </div>
   </div>
 </div>
+
+<!--delete confirmation alert-->
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script type="text/javascript">
+        $('.show_confirm').click(function(event) {
+            var form =  $(this).closest("form");
+            var name = $(this).data("name");
+            event.preventDefault();
+            swal({
+                title: `Are you sure you want to delete this product?`,
+                text: "If you delete this, it will be gone forever.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+              if (willDelete) {
+                form.submit();
+              }
+            });
+        });
+    </script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -130,4 +148,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+@endsection
 @endsection
