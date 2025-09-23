@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="card mt-5" id="product-index-container">
-  <h2 class="card-header">Laravel 10 CRUD from scratch - ItSolutionStuff.com</h2>
+  <h2 class="card-header">Product List</h2>
   <div class="card-body">
 
     <!-- Import/Export Section -->
@@ -101,6 +101,16 @@
 </div>
 
 @section('scripts')
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#productTable').DataTable();
+        });
+    </script>
+@endsection
+
 <!--modal image-->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -148,5 +158,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-@endsection
 @endsection

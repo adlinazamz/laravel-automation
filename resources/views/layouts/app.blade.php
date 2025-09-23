@@ -13,7 +13,10 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
+        <!-- Bootstrap Datepicker CSS -->
+        @stack('styles')
+        </head>
+
     <body class="font-sans antialiased">
        
         <div class="flex" id="wrapper" x-data="{isOpen:true}">
@@ -42,7 +45,10 @@
 
         <div id ="body" class ="w-full h-screen overflow-y-auto  transition-all duration-200">
             <div class = "w-full h-auto p-4 flex justify-between bg-gray-800 text-white">
-                <button @click.prevent="isOpen = !isOpen">Menu</button>
+                <button @click.prevent="isOpen = !isOpen"><svg xmlns="http://www.w3.org/2000/svg" class = "h-6 w-6" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width ="2" d="M4 6h16M4 12h16mm-7 6h7" />
+                    </svg>
+                </button>
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
@@ -95,5 +101,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <!--sweetalert delete dialog alert popup-->
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>    
+    <!-- Daterangepicker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <!-- Daterangepicker JS -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    @yield('scripts')
+
     </body>
 </html>

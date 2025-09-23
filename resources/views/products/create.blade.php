@@ -1,5 +1,4 @@
 @extends('products.layout')
-
 @section('content')
 
 <div class="card mt-5">
