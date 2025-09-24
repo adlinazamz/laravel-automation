@@ -12,7 +12,8 @@
 
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
-            <div class="form-group">
+        @if ($product)   
+        <div class="form-group">
                 <strong>Name:</strong>
                 {{ $product->name }}
             </div>
@@ -31,6 +32,9 @@
             </div>
         </div>
     </div>
+    @else
+        <p>No product found.</p>
+    @endif
     
     <div class="col-xs-12 col-sm-12 col-md-12 mt-2">
             <div class="form-group">

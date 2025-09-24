@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ProductController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,6 +39,5 @@ Route::delete('/products/{product}', [App\Http\Controllers\ProductController::cl
 //import export excel
 Route::get('/products-export',[App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
 Route::post('/products-import', [App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
-
 
 require __DIR__.'/auth.php';
