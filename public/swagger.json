@@ -7,11 +7,167 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
+            "url": "http://book_store.test",
             "description": "Local API server"
         }
     ],
     "paths": {
+        "/api/reset-password/{token}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Show password reset token info",
+                "description": "Display the password reset view.",
+                "operationId": "showResetPasswordForm",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token info returned"
+                    }
+                }
+            }
+        },
+        "/api/reset-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Reset password using token",
+                "description": "Handle an incoming new password request.",
+                "operationId": "resetPassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "abcd1234"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "password updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/password/update": {
+            "put": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Update user password",
+                "description": "Update the user's password.",
+                "operationId": "updatePassword",
+                "parameters": [
+                    {
+                        "name": "current-password",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "new_password",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "new_password_confirmation",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "example": "oldpassword123"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "example": "newpassword123"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -223,84 +379,6 @@
                     }
                 }
             }
-        },
-        "/api/profile": {
-            "get": {
-                "tags": [
-                    "Profile"
-                ],
-                "summary": "Get user profile",
-                "description": "Returns the authenticated user's profile information.",
-                "operationId": "getProfile",
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Profile"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Profile"
-                ],
-                "summary": "Delete user",
-                "description": "Delete the user's account.",
-                "operationId": "deleteProfile",
-                "responses": {
-                    "200": {
-                        "description": "Profile deleted successfully"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Profile"
-                ],
-                "summary": "Update user profile",
-                "description": "Update the user's profile information.",
-                "operationId": "updateProfile",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "email"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Profile updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Profile"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "components": {
@@ -392,18 +470,19 @@
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
+                "bearerFormat": "JWT",
                 "scheme": "bearer"
             }
         }
     },
     "tags": [
         {
-            "name": "Products",
-            "description": "Products"
+            "name": "Auth",
+            "description": "Auth"
         },
         {
-            "name": "Profile",
-            "description": "Profile"
+            "name": "Products",
+            "description": "Products"
         }
     ]
 }

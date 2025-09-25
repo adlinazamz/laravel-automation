@@ -4,6 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductApiController;
 use App\Http\Controllers\Api\ProfileApiController;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Http\Controllers\Api\Auth\PasswordApiController;
+use App\Http\Controllers\Api\Auth\NewPasswordApiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,12 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->group(function() {
-//auth
-    Route::get('/profile', [ProfileApiController::class, 'edit'])->name('api.profile.edit');
-    Route::patch('/profile', [ProfileApiController::class, 'update'])->name('api.profile.update');
-    Route::delete('/profile', [ProfileApiController::class, 'destroy'])->name('api.profile.destroy');
-    });
+
 //products
         Route::get('/products', [App\Http\Controllers\Api\ProductApiController::class, 'index'])->name('api.products.index');
         Route::post('/products', [App\Http\Controllers\Api\ProductApiController::class, 'store'])->name('api.products.store');
@@ -38,3 +38,9 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/products-export',[App\Http\Controllers\Api\ProductApiController::class, 'export'])->name('api.products.export');
         Route::post('/products-import', [App\Http\Controllers\Api\ProductApiController::class, 'import'])->name('api.products.import');
 //});
+
+//Auth folder
+Route::put('/password', [PasswordApiController::class, 'update'])->name('api.password.update');
+Route::get('/reset-password/{token}', [NewPasswordApiController::class, 'create'])
+                ->name('api.password.reset');
+Route::post('/reset-password', [NewPasswordApiController::class, 'store']);

@@ -14,13 +14,15 @@ use Illuminate\Routing\Controller as BaseController;
     description: "API documentation for the Product application"
 )]
 #[OA\Server(
-    url: "http://localhost:8000",
+    url: "http://book_store.test",
+    //url: "http://localhost:8000",
     description: "Local API server"
 )]
 #[OA\SecurityScheme(
     securityScheme: "bearerAuth",
     type: "http",
-    scheme: "bearer",)]
+    scheme: "bearer",
+    bearerFormat: "JWT")]
 
 class Controller extends BaseController
 {
