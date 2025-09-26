@@ -3,12 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductApiController;
-use App\Http\Controllers\Api\ProfileApiController;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Http\Controllers\Api\Auth\PasswordApiController;
 use App\Http\Controllers\Api\Auth\NewPasswordApiController;
-
+use App\Http\Controllers\Api\Auth\RegisteredUserApiController;
+use App\Http\Controllers\Api\Auth\AuthenticatedSessionApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,20 +26,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 //products
-        Route::get('/products', [App\Http\Controllers\Api\ProductApiController::class, 'index'])->name('api.products.index');
-        Route::post('/products', [App\Http\Controllers\Api\ProductApiController::class, 'store'])->name('api.products.store');
-        Route::get('/products/{product}', [App\Http\Controllers\Api\ProductApiController::class, 'show'])->name('api.products.show');
-        Route::put('/products/{product}', [App\Http\Controllers\Api\ProductApiController::class, 'update'])->name('api.products.update');
+        Route::get('/products', [ProductApiController::class, 'index'])->name('api.products.index');
+        Route::post('/products', [ProductApiController::class, 'store'])->name('api.products.store');
+        Route::get('/products/{product}', [ProductApiController::class, 'show'])->name('api.products.show');
+        Route::put('/products/{product}', [ProductApiController::class, 'update'])->name('api.products.update');
         Route::post('/products/{product}', [ProductApiController::class, 'updateViaPost'])->name('api.products.updateViaPost');
 
-        Route::delete('/products/{product}', [App\Http\Controllers\Api\ProductApiController::class, 'destroy'])->name('api.products.destroy');
+        Route::delete('/products/{product}', [ProductApiController::class, 'destroy'])->name('api.products.destroy');
         //import export excel
-        Route::get('/products-export',[App\Http\Controllers\Api\ProductApiController::class, 'export'])->name('api.products.export');
-        Route::post('/products-import', [App\Http\Controllers\Api\ProductApiController::class, 'import'])->name('api.products.import');
-//});
+        Route::get('/products-export',[ProductApiController::class, 'export'])->name('api.products.export');
+        Route::post('/products-import', [ProductApiController::class, 'import'])->name('api.products.import');
 
 //Auth folder
-Route::put('/password', [PasswordApiController::class, 'update'])->name('api.password.update');
-Route::get('/reset-password/{token}', [NewPasswordApiController::class, 'create'])
-                ->name('api.password.reset');
-Route::post('/reset-password', [NewPasswordApiController::class, 'store']);
+Route::post('/register', [RegisteredUserApiController::class, 'store'])->name('api.register');
+Route::post('/login', [AuthenticatedSessionApiController::class, 'store'])->name('api.login');
+Route::post('/logout', [AuthenticatedSessionApiController::class, 'destroy'])
+                ->name('api.logout');

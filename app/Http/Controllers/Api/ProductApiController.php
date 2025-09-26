@@ -120,7 +120,7 @@ class ProductApiController extends Controller
                 )
             ]
         ),
-        responses: [new OA\Response(response: 201, description: "Product created successfully")]
+        responses: [new OA\Response(response: 200, description: "Product created successfully")]
     )]
     public function store(Request $request)
     {
@@ -132,8 +132,12 @@ class ProductApiController extends Controller
             $image->move($destinationPath, $profileImage);
             $input['image'] = "$profileImage";
         }
-        Product::create($input);
-        return response()->json(['message' => 'Product created successfully.'], 201);
+        $product = Product::create($input);
+
+    return response()->json([
+        'message' => 'Product created successfully',
+        'data' => $product
+    ], 200);
     }
 
     #[OA\Get(
