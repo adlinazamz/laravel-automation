@@ -1,60 +1,71 @@
 @extends('products.layout')
 @section('content')
 
-<div class="card mt-5">
-  <h2 class="card-header">Add New Product</h2>
-  <div class="card-body">
+<div class="max-w-2xl mx-auto mt-10 bg-white shadow-md rounded-lg">
+  <h2 class="text-xl font-semibold bg-gray-100 px-6 py-4 rounded-t-lg">Add New Product</h2>
+  <div class="px-6 py-4">
 
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <a class="btn btn-primary btn-sm" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
-        <a class="btn btn-secondary btn-sm" href="{{ route('products.index') }}"><i class="fa fa-arrow-left"></i> Back to Products</a>
+    <div class="flex justify-end mb-4">
+      <a href="{{ route('products.index') }}" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-2 rounded inline-flex items-center">
+        <i class="fa fa-arrow-left mr-1"></i> Back to Products
+      </a>
     </div>
 
     <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+      @csrf
 
-        <div class="mb-3">
-            <label for="inputName" class="form-label"><strong>Name:</strong></label>
-            <input
-                type="text"
-                name="name"
-                class="form-control @error('name') is-invalid @enderror"
-                id="inputName"
-                placeholder="Name">
-            @error('name')
-                <div class="form-text text-danger">{{ $message }}</div>
-            @enderror
-        </div>
+      {{-- Name --}}
+      <div class="mb-4">
+        <label for="inputName" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
+        <input
+          type="text"
+          name="name"
+          id="inputName"
+          placeholder="Name"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('name') border-red-500 @enderror"
+        >
+        @error('name')
+          <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+        @enderror
+      </div>
 
-        <div class="mb-3">
-            <label for="inputDetail" class="form-label"><strong>Details:</strong></label>
-            <textarea
-                type ="text"
-                class="form-control @error('detail') is-invalid @enderror"
-                style="height:150px"
-                name="detail"
-                id="inputDetail"
-                placeholder="Detail"></textarea>
-            @error('details')
-                <div class="form-text text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        
-    <div class="mb-3">
-            <label for="inputImage" class="form-label"><strong>Image:</strong></label>
-            <input
-                type = "file"
-                name="image"
-                class="form-control @error('image') is-invalid @enderror"
-                id="inputImage">
-            @error('image')
-                <div class="form-text text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Submit</button>
-    
+      {{-- Details --}}
+      <div class="mb-4">
+        <label for="inputDetail" class="block text-sm font-medium text-gray-700 mb-1">Details:</label>
+        <textarea
+          name="detail"
+          id="inputDetail"
+          placeholder="Detail"
+          rows="5"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('detail') border-red-500 @enderror"
+        ></textarea>
+        @error('detail')
+          <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+        @enderror
+      </div>
+
+      {{-- Image --}}
+      <div class="mb-4">
+        <label for="inputImage" class="block text-sm font-medium text-gray-700 mb-1">Image:</label>
+        <input
+          type="file"
+          name="image"
+          id="inputImage"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('image') border-red-500 @enderror"
+        >
+        @error('image')
+          <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+        @enderror
+      </div>
+
+      {{-- Submit --}}
+      <div class="flex justify-end">
+        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded inline-flex items-center">
+          <i class="fa-solid fa-floppy-disk mr-1"></i> Submit
+        </button>
+      </div>
+
     </form>
-
   </div>
 </div>
 @endsection

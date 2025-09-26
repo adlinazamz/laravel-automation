@@ -1,161 +1,142 @@
 @extends('products.layout')
 @section('content')
 
-<div class="card mt-5" id="product-index-container">
-  <h2 class="card-header">Product List</h2>
-  <div class="card-body">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
     <!-- Import/Export Section -->
-    <div class="row mb-4 align-items-end">
-        <div class="col-md-6">
-            <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
-                @csrf
-                <input type="file" name="file" class="form-control" style="max-width: 200px;">
-                <button class="btn btn-success"><i class="fa fa-file"></i> Import Products</button>
-            </form>
-        </div>
-        <div class="col-md-6 text-end">
-            <a class="btn btn-info" href="{{ route('products.export') }}"><i class="fa fa-download"></i> Export Products</a>
-        </div>
+    <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-6">
+        <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="flex items-center gap-2">
+            @csrf
+            <input type="file" name="file" class="block w-48 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+            <button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs import-button">
+                <i class="fa fa-file"></i> Import
+            </button>
+               <a href="{{ route('products.export') }}" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs export-button">
+            <i class="fa fa-download"></i> Export
+        </a>
+         </form>
     </div>
 
-
     <!-- Date Filter Form -->
-    <form method="GET" action="{{ route('products.index') }}" class="row g-3 mb-4 align-items-end">
-        <div class="col-auto">
-            <label for="date_from" class="form-label">On</label>
-            <input type="text" id="date_from" name="date_from" class="form-control datepicker" autocomplete="off" value="{{ request('date_from') }}" placeholder="dd-mm-yyyy">
+    <form method="GET" action="{{ route('products.index') }}" class="flex flex-wrap gap-4 mb-6">
+        <div>
+            <label for="date_from" class="block text-sm font-medium text-gray-700">On</label>
+            <input type="text" id="date_from" name="date_from" class="datepicker mt-1 block w-40 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" value="{{ request('date_from') }}" placeholder="dd-mm-yyyy">
         </div>
-        <div class="col-auto">
-            <label for="date_to" class="form-label">To (optional)</label>
-            <input type="text" id="date_to" name="date_to" class="form-control datepicker" autocomplete="off" value="{{ request('date_to') }}" placeholder="dd-mm-yyyy">
+        <div>
+            <label for="date_to" class="block text-sm font-medium text-gray-700">To (optional)</label>
+            <input type="text" id="date_to" name="date_to" class="datepicker mt-1 block w-40 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" value="{{ request('date_to') }}" placeholder="dd-mm-yyyy">
         </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ route('products.index') }}" class="btn btn-secondary">Reset</a>
+        <div class="flex items-end gap-2">
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs filter-button" >Filter</button>
+            <a href="{{ route('products.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs reset-button" >Reset</a>
         </div>
     </form>
-    <script>
-    $(function() {
-        $('.datepicker').datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true,
-            todayHighlight: true
-        });
-    });
-    </script>
 
-        @session('success')
-            <div class="alert alert-success" role="alert"> {{ $value }} </div>
-        @endsession
-
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-primary btn-sm" href="{{ route('dashboard') }}"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
-            <a class="btn btn-success btn-sm" href="{{ route('products.create') }}"> <i class="fa fa-plus"></i> Create New Product</a>
+    @if (session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+            {{ session('success') }}
         </div>
+    @endif
 
-        <table class="table table-bordered table-striped mt-4">
-            <tr>
-            <th colspan="6"> List of Products </th>
-            </tr>
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-2 mb-4">
+        <a href="{{ route('products.create') }}"class= "bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm flex items-center gap-2 create-button">
+            <i class="fa fa-plus"></i> New Product
+        </a>
+    </div>
+
+    <!-- Product Table -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-600 border border-gray-800 rounded-lg">
+            <thead class="bg-gray-100">
                 <tr>
-                    <th width="80px">No</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Details</th>
-                    <th>Updated At</th>
-                    <th width="250px">Action</th>
+                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">No</th>
+                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Image</th>
+                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Name</th>
+                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Details</th>
+                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Updated At</th>
+                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Actions</th>
                 </tr>
             </thead>
-
-            <tbody>
-            @forelse ($products as $product)
-                <tr>
-                    <td>{{ ++$i }}</td>
-                    <td> <img src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" width="100px" class="img-thumbnail open-modal" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="{{$product->image}}"></td>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->detail}}</td>
-                    <td>{{$product ->updated_at-> format ('d M Y');}}</td>
-                    <td>
-                        <form action="{{ route('products.destroy',$product->id) }}" method="POST" id="deleteForm{{$product->id}}">
-                            <a class="btn btn-info btn-sm" href="{{ route('products.show',$product->id) }}"><i class="fa-solid fa-list"></i> Show</a>
-                            <a class="btn btn-primary btn-sm" href="{{ route('products.edit',$product->id) }}"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-xs btn-danger btn-flat show_confirm" data-toggle ="tooltip" title='Delete'> Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4">There are no data.</td>
-                </tr>
-            @endforelse
+            <tbody class="divide-y divide-gray-200">
+                @forelse ($products as $product)
+                    <tr>
+                        <td class="border px-4 py-2 text-sm text-gray-800">{{ ++$i }}</td>
+                        <td class="border px-4 py-2">
+                            <img src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" class="w-8 h-auto rounded cursor-pointer open-modal" data-img="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}"  />
+                        </td>
+                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->name }}</td>
+                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->detail }}</td>
+                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->updated_at->format('d M Y') }}</td>
+                        <td class="border px-4 py-2 flex gap-2 flex-wrap">
+                            <a href="{{ route('products.show', $product->id) }}" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs show-button" >
+                                <i class="fa-solid fa-list"></i> Show
+                            </a>
+                            <a href="{{ route('products.edit', $product->id) }}" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs edit-button" >
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </a>
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs delete-button" data-name="{{ $product->name }}">
+                                    <i class="fa fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-4 text-center text-gray-500">No products found.</td>
+                    </tr>
+                @endforelse
             </tbody>
-
         </table>
+    </div>
 
-         {!! $products->links() !!}
-
-  </div>
+    <div class="mt-6">
+        {!! $products->links() !!}
+    </div>
 </div>
 
-@section('scripts')
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<!-- Tailwind Modal -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-4 rounded shadow-lg relative">
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="document.getElementById('imageModal').classList.add('hidden')">✕</button>
+        <img id="modalImage" src="" class="max-w-full h-auto mt-4" alt="Product Image">
+    </div>
+</div>
 
-    <script>
-        $(document).ready(function () {
-            $('#productTable').DataTable();
-        });
-    </script>
 @endsection
 
-<!--modal image-->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-center">
-              <img id="modalImage" src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" class="img-fluid" alt="Product Image">
-          </div>
-      </div>
-  </div>
-</div>
-
-<!--delete confirmation alert-->
-    <script src ="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
-            var form =  $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            swal({
-                title: `Are you sure you want to delete this product?`,
-                text: "If you delete this, it will be gone forever.",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-            .then((willDelete) => {
-              if (willDelete) {
-                form.submit();
-              }
+@section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const name = form.querySelector('.delete-button').dataset.name || 'this product';
+                swal({
+                    title: `Delete ${name}?`,
+                    text: "This action cannot be undone.",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) form.submit();
+                });
             });
         });
-    </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.open-modal').forEach(function(img) {
-        img.addEventListener('click', function() {
-            var modalImg = document.getElementById('modalImage');
-            modalImg.src = this.getAttribute('data-img');
+        document.querySelectorAll('.open-modal').forEach(img => {
+            img.addEventListener('click', function () {
+                const modal = document.getElementById('imageModal');
+                const modalImg = document.getElementById('modalImage');
+                modalImg.src = this.getAttribute('data-img');
+                modal.classList.remove('hidden');
+            });
         });
     });
-});
 </script>
-
 @endsection

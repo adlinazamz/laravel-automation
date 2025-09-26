@@ -1,54 +1,92 @@
-<div x-cloak :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false" class="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden"></div>
-    
-<div x-cloak :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-gray-900 lg:translate-x-0 lg:static lg:inset-0">
-    <div class="flex items-center justify-center mt-8">
-        <div class="flex items-center">
-            <svg class="w-12 h-12" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M364.61 390.213C304.625 450.196 207.37 450.196 147.386 390.213C117.394 360.22 102.398 320.911 102.398 281.6C102.398 242.291 117.394 202.981 147.386 172.989C147.386 230.4 153.6 281.6 230.4 307.2C230.4 256 256 102.4 294.4 76.7999C320 128 334.618 142.997 364.608 172.989C394.601 202.981 409.597 242.291 409.597 281.6C409.597 320.911 394.601 360.22 364.61 390.213Z" fill="#4C51BF" stroke="#4C51BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M201.694 387.105C231.686 417.098 280.312 417.098 310.305 387.105C325.301 372.109 332.8 352.456 332.8 332.8C332.8 313.144 325.301 293.491 310.305 278.495C295.309 263.498 288 256 275.2 230.4C256 243.2 243.201 320 243.201 345.6C201.694 345.6 179.2 332.8 179.2 332.8C179.2 352.456 186.698 372.109 201.694 387.105Z" fill="white"/>
-            </svg>
-
-            <span class="mx-2 text-2xl font-semibold text-white">Dashboard</span>
-        </div>
+<!-- Sidebar -->
+<div
+  x-data="{ collapsed: true }"
+  x-bind:class="collapsed  
+    ? 'fixed top-0 left-0 w-16 bg-gray-800 z-40 overflow-hidden'  
+    : 'fixed top-0 left-0 w-64 bg-gray-800 z-40 overflow-y-auto'"
+class="min-h-screen h-full text-white transition-all duration-300"
+  x-cloak
+  @mouseenter="collapsed = false"
+  @mouseleave="collapsed = true"
+>
+  <!-- Sidebar header -->
+  <div class="flex items-center justify-between px-4 py-4">
+    <div class="flex items-center space-x-2" x-show="!collapsed" x-transition>
+      
+      <span class="text-xl font-bold text-white select-none">Menu</span>
     </div>
 
-    <nav class="mt-10">
-        <a class="flex items-center px-6 py-2 mt-4 {{ Route::currentRouteNamed('dashboard') ? 'text-gray-100' : 'text-gray-500' }} bg-gray-700 bg-opacity-25" href="{{ route('dashboard') }}">
-            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-            </svg>
+    <button @click="collapsed = !collapsed" class="focus:outline-none">
+      <svg class="w-6 h-6 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
 
-            <span class="mx-3">Dashboard</span>
-        </a>
+  <!-- Nav links -->
+  <nav class="mt-5 space-y-4 px-1">
 
-        <a class="flex items-center px-6 py-2 mt-4 {{ Route::currentRouteNamed('items.index') ? 'text-gray-100' : 'text-gray-500' }} hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100" href="{{ route('items.index') }}">
-            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z" />
-            </svg>
+    <!-- Dashboard -->
+    <a href="{{ route('dashboard') }}"
+      class="group relative flex items-center px-4 py-2 gap-x-4 rounded-md transition
+           {{ request()->routeIs('dashboard') 
+               ? 'bg-white text-gray-900 font-semibold' 
+               : 'text-gray-300 hover:bg-gray-700 hover:text-white' }}">
+      <svg class="w-5 h-5 flex-shrink-0"
+        fill="none"
+        :class="`${
+          request()->routeIs('dashboard') 
+            ? 'text-gray-900' 
+            : 'text-gray-400 group-hover:text-white'
+        }`"
+        stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          d="M3 9.75L12 3l9 6.75V20a1 1 0 01-1 1h-5a1 1 0 01-1-1v-5H10v5a1 1 0 01-1 1H4a1 1 0 01-1-1V9.75z" />
+      </svg>
 
-            <span class="mx-3">Items</span>
-        </a>
-    </nav>
+      <!-- Description slides out next to icon -->
+      <span x-show="!collapsed" x-transition class="select-none">Dashboard</span>
+
+      <!-- Tooltip on collapse -->
+      <span x-show="collapsed"
+        class="absolute left-full ml-1 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap select-none">
+        Dashboard
+      </span>
+    </a>
+
+    <!-- Products -->
+    <a href="{{ route('products.index') }}"
+      class="group relative flex items-center px-4 py-2 gap-x-4 rounded-md transition
+           {{ request()->routeIs('products.*') 
+               ? 'bg-white text-gray-900 font-semibold' 
+               : 'text-gray-300 hover:bg-gray-700 hover:text-white' }}">
+      <svg class="w-5 h-5 flex-shrink-0"
+        fill="none"
+        :class="`${
+          request()->routeIs('products.*') 
+            ? 'text-gray-900' 
+            : 'text-gray-400 group-hover:text-white'
+        }`"
+        stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m0-8H4m0 0h16" />
+      </svg>
+
+      <span x-show="!collapsed" x-transition class="select-none">Products</span>
+
+      <span x-show="collapsed"
+        class="absolute left-full ml-1 bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap select-none">
+        Products
+      </span>
+    </a>
+  </nav>
 </div>
 
- 
-<script>
-    // JavaScript to toggle the dropdown
-    const dropdownButton = document.getElementById('dropdown-button');
-    const dropdownMenu = document.getElementById('dropdown-menu');
-    let isOpen = true; // Set to true to open the dropdown by default
+<!-- Content area -->
+<div
+  class="transition-all duration-300"
+  style="margin-left: 4rem;"  
+>
 
-    // Function to toggle the dropdown state
-    function toggleDropdown() {
-        isOpen = !isOpen;
-        dropdownMenu.classList.toggle('hidden', !isOpen);
-    }
-
-    // Set initial state
-    toggleDropdown();
-
-    dropdownButton.addEventListener('click', () => {
-        toggleDropdown();
-    });
-</script>
+</div>

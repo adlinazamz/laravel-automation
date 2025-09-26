@@ -40,4 +40,6 @@ Route::delete('/products/{product}', [App\Http\Controllers\ProductController::cl
 Route::get('/products-export',[App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
 Route::post('/products-import', [App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
 
+
+
 require __DIR__.'/auth.php';

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full"> {{-- ✅ Add class="h-full" --}}
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,111 +13,93 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
         <!-- Bootstrap Datepicker CSS -->
         @stack('styles')
-        </head>
+    </head>
 
-    <body class="font-sans antialiased">
-       
-        <div class="flex" id="wrapper" x-data="{isOpen:true}">
-        <!-- Sidebar -->
-        <div id="sidebar"
-            class="h-screen bg-gray-800 transition-all duration-200"
-            :class="isOpen ? 'w-48' : 'w-0 overflow-hidden'">
+    <body class="h-full font-sans antialiased bg-gray-100"> {{-- ✅ Add class="h-full" here --}}
+        <div x-data="{ sidebarOpen: false, collapsed: false }" class="flex min-h-screen h-full bg-gray-100"> {{-- ✅ Add h-full --}}
             
-            <div x-show="isOpen" class="overflow-y-auto">
-                <div class="w-full h-auto p-2 flex justify-center bg-gray-100">
-                
-                    <div class="flex">
+            <!-- Mobile Overlay -->
+            <div 
+                x-show="sidebarOpen"
+                x-cloak
+                class="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
+                @click="sidebarOpen = false"
+            ></div>
 
-                <!-- Logo -->
-                        <div class="shrink-0 flex items-center">
-                            <a href="{{ route('dashboard') }}">
-                            <x-application-logo class="block h-9 w-auto fill-current text-black dark:text-black" />
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <!-- Sidebar Include -->
+            @include('layouts.sidenav')
 
-                @include('layouts.sidebar')
-            </div>
-        </div>
+            <!-- Main Content Area -->
+            <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300"
+                 :class="collapsed ? 'ml-20' :'ml-64'">
+                 
+                <!-- Topbar -->
+                <header class="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
+                    <!-- Left: Placeholder for sidebar toggle or branding -->
+                    <div class="w-6 h-6"></div>
 
-        <div id ="body" class ="w-full h-screen overflow-y-auto  transition-all duration-200">
-            <div class = "w-full h-auto p-4 flex justify-between bg-gray-800 text-white">
-                <button @click.prevent="isOpen = !isOpen"><svg xmlns="http://www.w3.org/2000/svg" class = "h-6 w-6" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width ="2" d="M4 6h16M4 12h16mm-7 6h7" />
-                    </svg>
-                </button>
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                    <!-- Right: Auth user dropdown -->
+                    <div class="flex items-center space-x-4">
+                        @auth
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 bg-white hover:text-gray-800">
+                                        <span>{{ Auth::user()->name }}</span>
+                                        <svg class="ml-1 w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 111.08 1.04l-4.25 4.66a.75.75 0 01-1.08 0l-4.25-4.66a.75.75 0 01.02-1.06z"
+                                                  clip-rule="evenodd"/>
+                                        </svg>
+                                    </button>
+                                </x-slot>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="route('profile.edit')">
+                                        {{ __('Profile') }}
+                                    </x-dropdown-link>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-            </div>
-<!--body if needed -->
-            <div class ="p-2">
-                 <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <x-dropdown-link :href="route('logout')"
+                                                         onclick="event.preventDefault(); this.closest('form').submit();">
+                                            {{ __('Log Out') }}
+                                        </x-dropdown-link>
+                                    </form>
+                                </x-slot>
+                            </x-dropdown>
+                        @endauth
                     </div>
                 </header>
-            @endif
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                <!-- Page Content -->
+                <main class="flex-1 p-6 overflow-y-auto">
+                    @if (isset($header))
+                        <header class="bg-white shadow">
+                            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                                {{ $header }}
+                            </div>
+                        </header>
+                    @endif
+
+                    <!-- Yielded Page -->
+                    {{ $slot }}
+                </main>
             </div>
         </div>
-    </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-    <!--sweetalert delete dialog alert popup-->
-    <script src ="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>    
-    <!-- Daterangepicker CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <!-- Daterangepicker JS -->
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <!-- JS Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-    @yield('scripts')
-
+        @yield('scripts')
     </body>
 </html>
