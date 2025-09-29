@@ -308,6 +308,9 @@
                                     "detail": {
                                         "type": "string"
                                     },
+                                    "type": {
+                                        "type": "string"
+                                    },
                                     "image": {
                                         "type": "string",
                                         "format": "binary"
@@ -420,6 +423,7 @@
                                 "required": [
                                     "name",
                                     "detail",
+                                    "type",
                                     "image",
                                     "_method"
                                 ],
@@ -432,6 +436,9 @@
                                         "type": "string"
                                     },
                                     "detail": {
+                                        "type": "string"
+                                    },
+                                    "type": {
                                         "type": "string"
                                     },
                                     "image": {
@@ -500,6 +507,11 @@
                         "description": "Detailed description of the product",
                         "type": "string",
                         "example": "This is a detailed description of the book."
+                    },
+                    "type": {
+                        "description": "Product type",
+                        "type": "string",
+                        "example": "Type A"
                     },
                     "image": {
                         "description": "URL of the product image",

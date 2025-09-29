@@ -55,6 +55,7 @@
                     <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Image</th>
                     <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Name</th>
                     <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Details</th>
+                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Type</th>
                     <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Updated At</th>
                     <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Actions</th>
                 </tr>
@@ -68,6 +69,7 @@
                         </td>
                         <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->name }}</td>
                         <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->detail }}</td>
+                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->type }}</td>
                         <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->updated_at->format('d M Y') }}</td>
                         <td class="border px-4 py-2 flex gap-2 flex-wrap">
                             <a href="{{ route('products.show', $product->id) }}" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs show-button" >

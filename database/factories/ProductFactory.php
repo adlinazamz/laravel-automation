@@ -25,6 +25,7 @@ class Productfactory extends Factory
             'name'=> $this->faker->name(),
             'detail'=> $this->faker->text(200),
             'image' => $filePath,
+            'type' => $this-> faker ->randomElement(['Type A', 'Type B', 'Type C', 'Type D', 'Type E']),
             //'file_type' => $this->faker->randomElement(['image', 'video', 'document']),
             //'description' => $this->faker->numberBetween(100, 5000), // size in KB
             'uploaded_at' => $this->faker->dateTimeBetween('-1 years', '+1 years'),

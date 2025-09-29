@@ -134,8 +134,9 @@ class AuthController extends BaseController
 
     public function login(){
         $credentials = request(['email','password']);
-        if (! $token = auth()->attempt($credentials)){
-            return $this->sendError ('Unauthorised.', ['error' => 'Unauthorised']);
+        $token = auth('api')->attempt($credentials);
+        if (!$token){
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
         $success = $this ->respondWithToken ($token);
         return $this ->sendResponse($success, 'User login successfully.');
@@ -169,7 +170,7 @@ class AuthController extends BaseController
     ]
 )]
     public function profile(){
-        $success = auth()->user();
+        $success = auth('api')->user();
         return $this->sendResponse($success,'Load User Profile.'); 
     }
     /**
@@ -204,7 +205,7 @@ class AuthController extends BaseController
 
 public function logout()
 {
-    auth()->logout();
+    auth('api')->logout();
     return $this->sendResponse([], 'User logged out successfully.');
 }
 
@@ -233,7 +234,7 @@ public function logout()
     ]
 )]
     public function refresh(){
-        $success = $this->respondWithToken(auth()->refresh());
+        $success = $this->respondWithToken(auth('api')->refresh());
         return $this ->sendResponse($success, 'Token refreshed successfully.');
     }
     /**
@@ -246,7 +247,7 @@ public function logout()
         return[
             'access_token' => $token,
             'token_type' =>'bearer',
-            'expires_in' =>auth()->factory()->getTTL()*60
+            'expires_in' =>auth('api')->factory()->getTTL()*60
         ];
     }
 }

@@ -19,6 +19,7 @@ class ProductImport implements ToModel, WithHeadingRow, WithValidation
         return new Product([
             'name' => $row['name'],
             'detail' => $row['detail'],
+            'type' => $row['type'],
             'image' => $row['image'],
             'uploaded_at' => $row['uploaded_at'],
         ]);
@@ -29,6 +30,7 @@ class ProductImport implements ToModel, WithHeadingRow, WithValidation
         return [
             'name' => 'required|string|max:255',
             'detail' => 'nullable|string',
+            'type' => 'required|string',
             'image' => 'required|string|max:255',
             'uploaded_at' => 'nullable|date',
         ];

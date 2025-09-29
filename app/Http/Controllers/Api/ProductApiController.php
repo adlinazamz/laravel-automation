@@ -114,6 +114,7 @@ class ProductApiController extends Controller
                         properties: [
                             new OA\Property(property: "name", type: "string"),
                             new OA\Property(property: "detail", type: "string"),
+                            new OA\Property(property: "type", type: "string"),
                             new OA\Property(property: "image", type: "string", format: "binary")
                         ]
                     )
@@ -124,7 +125,7 @@ class ProductApiController extends Controller
     )]
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required','detail' => 'required','image' => 'required|image|mimes:jpeg,png,jpg|max:2048']);
+        $request->validate(['name' => 'required','detail' => 'required','type' => 'required','image' => 'required|image|mimes:jpeg,png,jpg|max:2048']);
         $input = $request->all();
         if ($image = $request->file('image')) {
             $destinationPath = 'images/';
@@ -166,11 +167,12 @@ class ProductApiController extends Controller
                     mediaType: "multipart/form-data",
                     schema: new OA\Schema(
                         type: "object",
-                        required: ["name", "detail", "image", "_method"],
+                        required: ["name", "detail", "type", "image", "_method"],
                         properties: [
                             new OA\Property(property: "_method", type: "string", example:"PUT"),
                             new OA\Property(property: "name", type: "string"),
                             new OA\Property(property: "detail", type: "string"),
+                            new OA\Property(property: "type", type: "string"),
                             new OA\Property(property: "image", type: "string", format: "binary")
                         ]
                     )
@@ -182,7 +184,7 @@ class ProductApiController extends Controller
     public function update(Request $request, Product $product)
     {
         
-        $request->validate(['name' => 'required','detail' => 'required']);
+        $request->validate(['name' => 'required','detail' => 'required','type' => 'required']);
         $input = $request->all();
         if ($image = $request->file('image')) {
             $destinationPath = 'images/';

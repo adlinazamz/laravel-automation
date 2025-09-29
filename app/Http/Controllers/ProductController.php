@@ -52,7 +52,7 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate(['name' => 'required','detail' => 'required','image' => 'required|image|mimes:jpeg,png,jpg|max:2048']);
+        $request->validate(['name' => 'required','detail' => 'required','type' => 'required','image' => 'required|image|mimes:jpeg,png,jpg|max:2048']);
         $input = $request->all();
         if ($image = $request->file('image')) {
             $destinationPath = 'images/';
@@ -78,7 +78,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
-        $request->validate(['name' => 'required','detail' => 'required']);
+        $request->validate(['name' => 'required','detail' => 'required', 'type'=> 'required']);
         $input = $request->all();
         if ($image = $request->file('image')) {
             $destinationPath = 'images/';
