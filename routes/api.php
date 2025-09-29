@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Auth\NewPasswordApiController;
 use App\Http\Controllers\Api\Auth\RegisteredUserApiController;
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionApiController;
 
+use App\Http\Controllers\Api\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,8 +38,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::get('/products-export',[ProductApiController::class, 'export'])->name('api.products.export');
         Route::post('/products-import', [ProductApiController::class, 'import'])->name('api.products.import');
 
-//Auth folder
-Route::post('/register', [RegisteredUserApiController::class, 'store'])->name('api.register');
-Route::post('/login', [AuthenticatedSessionApiController::class, 'store'])->name('api.login');
-Route::post('/logout', [AuthenticatedSessionApiController::class, 'destroy'])
-                ->name('api.logout');
+Route::group([
+    'middleware'=>'api',
+    'prefix' => 'auth'
+], function($router){
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout',[AuthController::class, 'logout'])->middleware('auth:api');
+    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
+    Route::post('/profile', [AuthController::class, 'profile'])->middleware('auth:api');
+});
