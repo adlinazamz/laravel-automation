@@ -14,6 +14,41 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
+    public function dashboard(Request $request){
+        $products= Product::all();
+        //$products = Product::select ('created_at', 'updated_at', 'type')
+        //-> orderBy('created_at')
+        //->get();
+        $typeCounts= $products-> groupBy ('type')-> map->count();
+        $newProducts = Product::whereDate('created_at', today())->count();
+        $updateProducts = Product::whereDate('updated_at', today())->count();
+        $range = $request-> get('range','7');
+        $fromDate = match($range){
+            'today' => Carbon::today(),
+            'yesterday'=> Carbon::yesterday(),
+            '7'=>Carbon::today()-> subdays(6),
+            '30'=>Carbon::today()->subdays(29),
+            '90'=>Carbon::today()->subdays(89),
+            default => Carbon::today()->subdays(6),
+        };
+        $productCreated = \App\Models\product::where('created_at', '>=', $fromDate)
+            ->get()
+            ->groupBy(fn($p)=>$p->created_at->format('d M'))
+            ->map->count()
+            ->toArray();
+        $productUpdated = \App\Models\product::where('updated_at', '>=', $fromDate)
+            ->get()
+            ->groupBy(fn($p)=>$p->updated_at->format('d M'))
+            ->map->count()
+            ->toArray();
+
+        return view('dashboard', ['products' => $products, 'typeCounts' => $typeCounts, 
+        'newProducts' => $newProducts, 
+        'updateProducts' => $updateProducts, 
+        'productCreated'=>$productCreated, 'productUpdated'=>$productUpdated, 'range'=>$range,]);
+    }
+
+
     public function index(Request $request): View
     {
         $query = Product::query();

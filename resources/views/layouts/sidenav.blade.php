@@ -3,7 +3,7 @@
   x-data="{ collapsed: true }"
   x-bind:class="collapsed  
     ? 'fixed top-0 left-0 w-16 bg-gray-800 z-40 overflow-hidden'  
-    : 'fixed top-0 left-0 w-64 bg-gray-800 z-40 overflow-y-auto'"
+    : 'fixed top-0 left-0 w-50 bg-gray-800 z-40 overflow-y-auto'"
 class="min-h-screen h-full text-white transition-all duration-300"
   x-cloak
   @mouseenter="collapsed = false"

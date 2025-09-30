@@ -34,7 +34,7 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300"
-                 :class="collapsed ? 'ml-20' :'ml-64'">
+                 :class="collapsed ? 'ml-20' :'ml-45'">
                  
                 <!-- Topbar -->
                 <header class="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
