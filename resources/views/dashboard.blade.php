@@ -53,7 +53,7 @@
               <div data-popper-arrow></div>
           </div>
         </h5>
-        <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">{{$newProducts}}</p>
+        <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">{{array_sum($productCreated)}}</p>
       </div>
       <div>
         <h5 class="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">Updated
@@ -72,7 +72,7 @@
               <div data-popper-arrow></div>
           </div>
         </h5>
-        <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">{{$updateProducts}}</p>
+        <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">{{array_sum($productUpdated)}}</p>
       </div>
     </div>
     <div>
