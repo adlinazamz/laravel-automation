@@ -2,70 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ApexCharts Unified Styling (No Dark Mode Dependency) */
+/* ================================
+   ApexCharts Unified Styling
+   ================================ */
 
-/* Tooltip container */
+/* --- TOOLTIP --- */
 .apexcharts-tooltip,
 .apexcharts-xaxistooltip,
 .apexcharts-yaxistooltip {
-  background-color: #1f2937 !important; /* gray-800 */
-  border: 1px solid #374151 !important; /* gray-700 */
-  border-radius: 0.5rem !important;
-  padding: 0.5rem 0.75rem !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  background: transparent !important;   /* nuke default white */
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: #fff !important;
 }
-.apexcharts-tooltip-series-name,
-.apexcharts-tooltip-series-value,
-.apexcharts-tooltip-title,
-.apexcharts-tooltip-text,
-.apexcharts-tooltip-series-group {
-  color: #ffffff !important;
-  font-weight: 500 !important;
+
+.apexcharts-tooltip,
+.apexcharts-tooltip * {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  color: #fff !important;
+  fill: #fff !important;      /* affects <text> inside SVG */
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Restore proper styling for date (x-axis) tooltip */
+.apexcharts-xaxistooltip {
+  background: #1f2937 !important;  /* dark background */
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25) !important;
+  border: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.apexcharts-xaxistooltip-text {
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  font-family: Inter, sans-serif !important;
 }
 
 
-/* Tooltip text */
-.apexcharts-tooltip-text,
-.apexcharts-tooltip-series-group {
-  color: #ffffff !important; /* force white text */
-  font-weight: 500 !important;
+.apexcharts-tooltip-text-y-value,
+.apexcharts-tooltip-text-y-label {
+  display: inline !important;
+  font-weight: 600 !important;
+  color: #fff !important;
 }
 
-/* Legend */
+/* --- LEGEND --- */
 .apexcharts-legend-text {
-  color: #111827 !important; /* gray-900 */
-  font-size: 0.875rem; /* text-sm */
+  color: #111827 !important;   /* gray-900 */
+  font-size: 0.875rem;          /* text-sm */
   font-weight: 500;
 }
 
-/* Axis labels */
+/* --- AXIS LABELS --- */
 .apexcharts-xaxis text,
 .apexcharts-yaxis text {
-  fill: #374151 !important; /* gray-700 */
-  font-size: 0.75rem; /* text-xs */
+  fill: #374151 !important;     /* gray-700 */
+  font-size: 0.75rem;           /* text-xs */
   font-weight: 500;
 }
 
-/* Grid lines */
+/* --- GRID --- */
 .apexcharts-gridline {
-  stroke: #e5e7eb !important; /* gray-200 */
+  stroke: #e5e7eb !important;   /* gray-200 */
 }
 
-/* Title (if enabled) */
+/* --- TITLE --- */
 .apexcharts-title-text {
-  font-size: 1rem; /* text-base */
+  font-size: 1rem;              /* text-base */
   font-weight: 600;
-  color: #111827 !important; /* gray-900 */
-}
-/* Force all tooltip text (including SVG <text>) to white */
-.apexcharts-tooltip * {
-  color: #ffffff !important;
-  fill: #ffffff !important; /* handles SVG text */
-}
-
-/* Explicitly cover SVG text nodes inside tooltip */
-.apexcharts-tooltip text,
-.apexcharts-xaxistooltip text,
-.apexcharts-yaxistooltip text {
-  fill: #ffffff !important;
+  color: #111827 !important;    /* gray-900 */
 }

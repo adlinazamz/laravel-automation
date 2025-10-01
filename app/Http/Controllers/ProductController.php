@@ -19,7 +19,7 @@ class ProductController extends Controller
         //$products = Product::select ('created_at', 'updated_at', 'type')
         //-> orderBy('created_at')
         //->get();
-        $typeCounts= $products-> groupBy ('type')-> map->count();
+        $typeCounts= $products-> groupBy ('type')-> map->count()->sortKeys();
         $newProducts = Product::whereDate('created_at', today())->count();
         $updateProducts = Product::whereDate('updated_at', today())->count();
         $range = $request-> get('range','7');
@@ -31,6 +31,7 @@ class ProductController extends Controller
             '90'=>Carbon::today()->subdays(89),
             default => Carbon::today()->subdays(6),
         };
+        
         $productCreated = \App\Models\product::where('created_at', '>=', $fromDate)
             ->get()
             ->groupBy(fn($p)=>$p->created_at->format('d M'))
