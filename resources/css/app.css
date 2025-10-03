@@ -27,23 +27,7 @@
   visibility: visible !important;
 }
 
-/* Restore proper styling for date (x-axis) tooltip */
-.apexcharts-xaxistooltip {
-  background: #1f2937 !important;  /* dark background */
-  border-radius: 6px !important;
-  padding: 6px 10px !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25) !important;
-  border: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
 
-.apexcharts-xaxistooltip-text {
-  color: #fff !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  font-family: Inter, sans-serif !important;
-}
 
 
 .apexcharts-tooltip-text-y-value,

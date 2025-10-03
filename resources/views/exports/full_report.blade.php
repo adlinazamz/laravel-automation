@@ -11,14 +11,14 @@
 </head>
 <body>
     <h1 style ="text-align:center;">Full Report</h1>
-    <p style ="text-align: center;">Date Range: {{$start-> format('d/m/Y')}}-{{$end-> format('d/m/Y')}}</p>
+    <p style ="text-align: center;">{{$start-> format('d/m/Y')}}-{{$end-> format('d/m/Y')}}</p>
 
+    
     <h2>Summary by Type</h2>
     <table>
         <thead>
             <tr>
                 <th>Type</th>
-
                 <th>Total</th>
                 <th>Created</th>
                 <th>Updated</th>
@@ -36,7 +36,7 @@
         </tbody>
     </table>
 
-    <h2>Details</h2>
+    <h2>Data</h2>
     <table>
         <thead>
             <tr>

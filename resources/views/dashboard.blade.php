@@ -10,9 +10,8 @@
       const productTypeData = @json($typeCounts->values());  
       const productCreated = @json(array_values($productCreated));
       const productUpdated = @json(array_values($productUpdated));
-      const productDates = @json(array_keys($productCreated)).sort((a,b)=>{
-        return new Date(a)- new Date(b);
-      });
+      const productDates = @json(array_keys($productCreated)).sort((a,b)=>
+        new Date(a)- new Date(b));
     </script>
     
     <div class="min-h-screen py-3">
@@ -31,7 +30,7 @@
             </div>
 
             <!-- Charts -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-3">
                             
 <div class="w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
   <div class="flex justify-between mb-5">
@@ -80,9 +79,9 @@
       $labels=[
         'today'=>'Today',
         'yesterday' =>'Yesterday',
-        '7'=> 'Last 7 days',
-        '30'=> 'Last 30 days',
-        '90'=> 'Last 90 days',
+        '7 Days'=> 'Last 7 days',
+        '30 Days'=> 'Last 30 days',
+        '90 Days'=> 'Last 90 days',
       ];
       $currentLabel =$labels[$range]?? 'last 7 days';
       @endphp
@@ -112,10 +111,10 @@
       </div>
     </div>
   </div>
-  <div id="line-chart"></div>
+  <div id="line-chart" class="w-full h-96"></div>
   <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
     <div class="pt-5">      
-      <a href="#" class="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+      <a id="exportReportButton" data-range ="{{$range ?? '7'}}" class="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         <svg class="w-3.5 h-3.5 text-white me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
           <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2Zm-3 15H4.828a1 1 0 0 1 0-2h6.238a1 1 0 0 1 0 2Zm0-4H4.828a1 1 0 0 1 0-2h6.238a1 1 0 1 1 0 2Z"/>
           <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
@@ -126,7 +125,7 @@
   </div>
 </div>
 
-
+    <!-- Donut Chart -->
   <div class="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
     
     <div class="flex justify-between mb-3">
@@ -149,20 +148,18 @@
           </div>
         <div>
           <button type="button" data-tooltip-target="data-tooltip" data-tooltip-placement="bottom" class="hidden sm:inline-flex items-center justify-center text-gray-500 w-8 h-8 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm"><svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
-      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
-    </svg><span class="sr-only">Download data</span>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
+              </svg><span class="sr-only">Download data</span>
           </button>
           <div id="data-tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-              Download CSV
+              Download PNG
               <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </div>
     </div>
 
     <div>
-
-    <!-- Donut Chart -->
-    <div class="py-6" id="donut-chart-test"></div>
+    <div class="py-6" id="donut-chart"></div>
 
     <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
       <div class="flex justify-between items-center pt-5">
@@ -173,6 +170,93 @@
         </div>
     </div>
             </div>
-
  
-</x-app-layout>
+  <!--generate report for the line chart into pdf-->
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Line chart setup
+    if (document.getElementById("line-chart")) {
+        window.apexChart = new ApexCharts(document.getElementById("line-chart"), {
+            chart: {
+                type: "line",
+                width: "100%",
+                height: 350,
+                toolbar: { show: false }
+            },
+            series: [
+                { name: "Updated", data: productUpdated },
+                { name: "Created", data: productCreated }
+            ],
+            stroke: { width: 3, curve: "smooth" },
+            dataLabels: { enabled: false },
+        });
+    }
+
+    // Line chart export to PDF
+    const exportBtn = document.getElementById('exportReportButton');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            exportBtn.textContent = "Generating...";
+            exportBtn.classList.add('opacity-50');
+            exportBtn.disabled = true;
+
+            try {
+                const data = await window.apexChart.dataURI({ type: 'png', quality: 1 });
+                const chartDataUri = data.imgURI;
+
+                const form = new FormData();
+                const range = exportBtn.dataset.range;
+                form.append('range', range); 
+                form.append('chart', chartDataUri);
+
+                const token = document.querySelector('meta[name="csrf-token"]').content;
+                const response = await fetch("{{ route('reports.export.full') }}", {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': token },
+                    body: form
+                });
+
+                if (!response.ok) throw new Error(await response.text());
+                const blob = await response.blob();
+                const filename = `full-report-${range}-${new Date().toISOString().slice(0,10)}.pdf`;
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert('Export failed: ' + err.message);
+            } finally {
+                exportBtn.textContent = 'Export Full Report';
+                exportBtn.classList.remove('opacity-50');
+                exportBtn.disabled = false;
+            }
+        });
+    }
+
+    // Donut chart setup
+    if (document.getElementById("donut-chart")) {
+      if (window.donutChart){
+        window.donutChart.destroy();
+      }
+        window.donutChart = new ApexCharts(document.getElementById("donut-chart"), {
+            chart: {
+                type: 'donut',
+                width: "100%",
+                height: 320,
+                toolbar: { show: false }
+            },
+            series: productTypeData,
+            labels: productTypeLabels,
+            dataLabels: { enabled: true },
+        });
+    }
+    // Donut chart download as PNG
+    
+});
+</script>
+</x-layout-app>
