@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Helpers;
+namespace App\Helpers;
 
 use Illuminate\Support\facades\File;
 
@@ -12,6 +12,7 @@ class FileCreator{
     public function createModel(){
         $stub=$this->getStub('Model.stub');
     }
+    //automate migration skeleton
     public function createMigration(){
         $stub=$this->getStub('migration.stub');
         $migrationContent=str_replace('{{tableName}}', strtolower($this->name).'s', $stub);
@@ -23,11 +24,12 @@ class FileCreator{
         $this->saveFile("app/Http/Controllers/{$this->name}Controller.php", $controllerContent);
     }
     public function createViews(){
-        $views = ['index', 'show', 'create', 'edit'];
+        $views = ['index', 'show', 'create', 'edit', 'layout'];
+        $nameFile = strtolower($this->name);
         foreach ($views as $view){
             $stub =$this->getStub("views/{$view}.stub");
-            $viewContent=str_replace('{{modelName}}', strtolower($this->name), $stub);
-            $this->saveFile("resources/views/{$this->name}/{$view}.blade.php", $viewContent);
+            $viewContent=str_replace('{{modelName}}', $nameFile, $stub);
+            $this->saveFile("resources/views/{$nameFile}/{$view}.blade.php", $viewContent);
         }
     }
     protected function getStub($file){

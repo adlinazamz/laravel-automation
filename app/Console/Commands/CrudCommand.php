@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Console\Commands;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -9,7 +9,7 @@ use App\Helpers\FileCreator;
 
 class CrudCommand extends Command{
     protected $signature ='auto:crud {name}';
-    protected $description ='Generate model, migration, controller adn views for the given model';
+    protected $description ='Generate model, migration, controller and views for the given model';
     
     public function handle(){
         $name =ucfirst($this-> argument('name'));

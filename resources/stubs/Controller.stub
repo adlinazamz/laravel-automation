@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class {{modelName}}Controller extends Controller{
     public function index(){
         ${{modelNamePluralLower}}={{modelName}}::all();
-        return view('{{modelNamePluralLower}}.index',compact('{{modelNamePluralLower}}'));
+        return view('{{$modelNamePluralLower}}.index',compact('{{modelNamePluralLower}}'));
     }
     public function create(){
         return view('{{modelNamePluralLower}}.create');
