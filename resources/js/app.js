@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   },
                 },
               },
-              size:"70%",
+              size:"65%",
             },
           },
         },

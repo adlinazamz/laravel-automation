@@ -24,7 +24,7 @@
                     <p class="text-2xl font-bold text-gray-900 dark:text-white">{{$products->count()}}</p>
                 </div>
                 <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                    <h5 class="text-gray-500 dark:text-gray-400 mb-2">New Products</h5>
+                    <h5 class="text-gray-500 dark:text-gray-400 mb-2">New Products Created Today</h5>
                     <p class="text-2xl font-bold text-gray-900 dark:text-white">{{$newProducts}}</p>
                 </div>
             </div>
@@ -126,7 +126,7 @@
 </div>
 
     <!-- Donut Chart -->
-  <div class="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
+  <div class=" w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
     
     <div class="flex justify-between mb-3">
         <div class="flex justify-center items-center">
@@ -191,7 +191,27 @@ document.addEventListener('DOMContentLoaded', () => {
             dataLabels: { enabled: false },
         });
     }
+const waitForChartRender = async () => {
+    return new Promise((resolve, reject) => {
+        let attempts = 0;
+        const maxAttempts = 10;
 
+        const checkChart = () => {
+            if (window.apexChart && window.apexChart.w && window.apexChart.w.globals && window.apexChart.w.globals.series) {
+                resolve();
+            } else {
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    reject("Chart not ready after waiting.");
+                } else {
+                    setTimeout(checkChart, 300); // wait 300ms and try again
+                }
+            }
+        };
+
+        checkChart();
+    });
+};
     // Line chart export to PDF
     const exportBtn = document.getElementById('exportReportButton');
     if (exportBtn) {
@@ -202,8 +222,17 @@ document.addEventListener('DOMContentLoaded', () => {
             exportBtn.disabled = true;
 
             try {
+              await waitForChartRender();
                 const data = await window.apexChart.dataURI({ type: 'png', quality: 1 });
                 const chartDataUri = data.imgURI;
+                
+                console.log("Chart image URI:", chartDataUri);
+
+                if (!chartDataUri || !chartDataUri.startsWith("data:image/png;base64,")) {
+                  console.warn("⚠️ Chart image URI is invalid or not base64 PNG.");
+                } else {
+                  console.info("✅ Chart image URI looks valid.");
+                }
 
                 const form = new FormData();
                 const range = exportBtn.dataset.range;
