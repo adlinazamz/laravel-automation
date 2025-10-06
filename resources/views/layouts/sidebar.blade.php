@@ -6,5 +6,8 @@
     <x-nav-link :href="route('products.index')" :active="request()->routeIs('product')">
          {{ __('Products') }}
       </x-nav-link>
+      <x-nav-link :href="route('products.index')" :active="request()->routeIs('product')">
+         {{ __('Products') }}
+      </x-nav-link>
 </div>
   

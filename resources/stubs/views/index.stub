@@ -1,0 +1,29 @@
+@extends('products.layout')
+@section('content')
+
+<h1> All {{modelName}}</h1>
+
+@endsection
+
+@section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const name = form.querySelector('.delete-button').dataset.name || 'this product';
+                swal({
+                    title: `Delete ${name}?`,
+                    text: "This action cannot be undone.",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) form.submit();
+                });
+            });
+        });
+    });
+</script>
+@endsection
