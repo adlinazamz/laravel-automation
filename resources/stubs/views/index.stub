@@ -1,4 +1,4 @@
-@extends('{{modelName}}.layout')
+@extends('{{modelNameLower}}.layout')
 @section('content')
 
 <h1> All {{modelName}}</h1>
@@ -12,7 +12,7 @@
         document.querySelectorAll('.delete-form').forEach(form => {
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
-                const name = form.querySelector('.delete-button').dataset.name || 'this {{modelName}}';
+                const name = form.querySelector('.delete-button').dataset.name || 'this {{modelNameLower}}';
                 swal({
                     title: `Delete ${name}?`,
                     text: "This action cannot be undone.",

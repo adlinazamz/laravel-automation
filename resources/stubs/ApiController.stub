@@ -14,30 +14,30 @@ use OpenApi\Attributes as OA;
 class {{modelName}}Controller extends Controller{
     
     #[OA\Get(
-        path: "/api/{{modelName}}",
-        summary: "Get list of {{modelName}}",
+        path: "/api/{{modelNameLower}}",
+        summary: "Get list of {{modelNameLower}}",
         operationId: "get{{modelName}}",
         tags: ["{{modelName}}"],
-        description: "Returns a paginated list of {{modelName}}.",
+        description: "Returns a paginated list of {{modelNameLower}}.",
         responses: [
             new OA\Response(
                 response: 200,
                 description: "Successful operation",
                 content: new OA\JsonContent(
                     type: "array",
-                    items: new OA\Items(ref: "#/components/schemas/{{modelName}}")
+                    items: new OA\Items(ref: "#/components/schemas/{{modelNameLower}}")
                 )
             )
         ]
     )]
     
     public function index(Request $request){
-        ${{modelNamePluralLower}}={{modelName}}::all();
-        return response()->json(${{modelName}});
+        ${{modelNameLower}}={{modelName}}::all();
+        return response()->json(${{modelNameLower}});
     }
 
  #[OA\Post(
-        path: "/api/{{modelName}}",
+        path: "/api/{{modelNameLower}}",
         summary: "Create a new {{modelName}}",
         operationId: "create{{modelName}}",
         tags: ["{{modelName}}"],
@@ -66,24 +66,24 @@ class {{modelName}}Controller extends Controller{
         {{modelName}}::create($request-> all());
         return response()->json([
                 'message' => '{{modelName}} created successfully',
-                'data' => ${{modelName}}
+                'data' => ${{modelNameLower}}
             ], 200);    
     }
 
     #[OA\Get(
-        path: "/api/{{ModelName}}/{ModelNamePluralLowerCase}",
-        summary: "Get a specific {{modelName}}",
+        path: "/api/{{modelNameLower}}/{modelNameLower}",
+        summary: "Get a specific {{modelNameLower}}",
         operationId: "get{{modelName}}ById",
         tags: ["{{modelName}}"],
-        parameters: [new OA\Parameter(name: "{{modelNameLowerCase}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
+        parameters: [new OA\Parameter(name: "{{modelNameLower}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
         responses: [new OA\Response(response: 200, description: "Successful operation")]
     )]
     public function show($id){
-        return response()->json(${{modelName}});
+        return response()->json(${{modelNameLower}});
     }
 
     #[OA\Post(
-        path: "/api/{{modelName}}/{ {{modelNameLowerCase}} }",
+        path: "/api/{{modelNameLower}}/{ {{modelNameLower}} }",
         summary: "Update a {{modelName}} by ID (POST + _method=PUT)",
         operationId: "update{{modelName}}viaPost",
         tags: ["{{modelName}}"],
@@ -118,11 +118,11 @@ class {{modelName}}Controller extends Controller{
     }
 
     #[OA\Delete(
-        path: "/api/{{modelName}}/{ {{modelNameLowerCase}} }",
-        summary: "Delete a {{modelName}} by ID",
+        path: "/api/{{modelNameLower}}/{ {{modelNameLowerCase}} }",
+        summary: "Delete a {{modelNameLower}} by ID",
         operationId: "delete{{modelName}}",
         tags: ["{{modelName}}"],
-        parameters: [new OA\Parameter(name: "{{modelName}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
+        parameters: [new OA\Parameter(name: "{{modelNameLower}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
         responses: [new OA\Response(response: 200, description: "{{modelName}} deleted successfully")]
     )]
     public function destroy($id){

@@ -1,4 +1,4 @@
-@extends('{{modelName}}.layout')
+@extends('{{modelNameLower}}.layout')
 @section('content')
 
 <div class="max-w-2xl mx-auto mt-10 bg-white shadow-md rounded-lg">
@@ -6,12 +6,12 @@
   <div class="px-6 py-4">
 
     <div class="flex justify-end mb-4">
-      <a href="{{ route('{{modelName}}.index') }}" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-2 rounded inline-flex items-center">
+      <a href="{{ route('{{modelNameLower}}.index') }}" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-2 rounded inline-flex items-center">
         <i class="fa fa-arrow-left mr-1"></i> Back to {{modelName}}
       </a>
     </div>
 
-    <form action="{{ route('{{modelName}}.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('{{modelNameLower}}.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
 <!-- change based on the column, find a way to amek it read from the table column instead-->
       {{-- Name --}}
