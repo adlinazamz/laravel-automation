@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class {{modelName}}Controller extends Controller{
     public function index(){
-        ${{modelNamePluralLower}}={{modelName}}::all();
-        return view('{{$modelNamePluralLower}}.index',compact('{{modelNamePluralLower}}'));
+        ${{modelNamePluralLower}} = $query->latest()->paginate(10);
+        return view('{{$modelNamePluralLower}}.index', compact('{{modelNameLowerCase}}'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
     public function create(){
         return view('{{modelNamePluralLower}}.create');

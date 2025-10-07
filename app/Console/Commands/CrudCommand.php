@@ -22,6 +22,7 @@ class CrudCommand extends Command{
         $creator->createMigration();
         $creator->createController();
         $creator->createViews();
+        $creator->createApiController();//for api controller
 
         $this->info("CRUD for $name created successfully.");
     }

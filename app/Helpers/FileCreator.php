@@ -23,6 +23,11 @@ class FileCreator{
         $controllerContent = str_replace('{{modelName}}', $this->name, $stub);
         $this->saveFile("app/Http/Controllers/{$this->name}Controller.php", $controllerContent);
     }
+    public function createApiController(){
+        $stub=$this->getStub('ApiController.stub'); 
+        $controllerApiContent = str_replace('{{modelName}}', $this->name, $stub);
+        $this->saveFile("app/Http/Controllers/Api/{$this->name}ApiController.php", $controllerApiContent);
+    }
     public function createViews(){
         $views = ['index', 'show', 'create', 'edit', 'layout'];
         $nameFile = strtolower($this->name);

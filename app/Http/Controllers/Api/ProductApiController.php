@@ -97,7 +97,7 @@ class ProductApiController extends Controller
     {
         return response()->json(['message' => 'Products imported successfully.'], 201);
     }
-
+    
     #[OA\Post(
         path: "/api/products",
         summary: "Create a new product",
@@ -156,7 +156,7 @@ class ProductApiController extends Controller
 
     #[OA\Post(
         path: "/api/products/{product}",
-        summary: "Update a product by ID (POST + _method=PUT",
+        summary: "Update a product by ID (POST + _method=PUT)",
         operationId: "updateProductviaPost",
         tags: ["Products"],
         parameters: [new OA\Parameter(name: "product", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
