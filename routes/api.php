@@ -48,34 +48,3 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
     Route::post('/profile', [AuthController::class, 'profile'])->middleware('auth:api');
 });
-
-//Tester auto-generated api route
-Route::get('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'index'])->name('api.tester.index');
-Route::post('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'store'])->name('api.tester.store');
-Route::get('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'show'])->name('api.tester.show');
-Route::put('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'update'])->name('api.tester.update');
-Route::delete('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'destroy'])->name('api.tester.destroy');
-//Tester auto-generated api route
-Route::get('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'index'])->name('api.tester.index');
-Route::post('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'store'])->name('api.tester.store');
-Route::get('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'show'])->name('api.tester.show');
-Route::put('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'update'])->name('api.tester.update');
-Route::delete('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'destroy'])->name('api.tester.destroy');
-//Tester auto-generated api route
-Route::get('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'index'])->name('api.tester.index');
-Route::post('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'store'])->name('api.tester.store');
-Route::get('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'show'])->name('api.tester.show');
-Route::put('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'update'])->name('api.tester.update');
-Route::delete('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'destroy'])->name('api.tester.destroy');
-//Tester auto-generated api route
-Route::get('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'index'])->name('api.tester.index');
-Route::post('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'store'])->name('api.tester.store');
-Route::get('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'show'])->name('api.tester.show');
-Route::put('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'update'])->name('api.tester.update');
-Route::delete('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'destroy'])->name('api.tester.destroy');
-//Tester auto-generated api route
-Route::get('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'index'])->name('api.tester.index');
-Route::post('/tester', [App\Http\Controllers\Api\TesterApiController::class, 'store'])->name('api.tester.store');
-Route::get('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'show'])->name('api.tester.show');
-Route::put('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'update'])->name('api.tester.update');
-Route::delete('/tester/{tester}', [App\Http\Controllers\Api\TesterApiController::class, 'destroy'])->name('api.tester.destroy');
