@@ -80,6 +80,10 @@ class="min-h-screen h-full text-white transition-all duration-300"
         Products
       </span>
     </a>
+
+    @include('layouts.sidenav-link')
+    @stack('sidenav-items')
+
   </nav>
 </div>
 

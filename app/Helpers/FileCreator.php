@@ -84,6 +84,19 @@ class FileCreator{
         );
         $this->appendToFile("routes/api.php", $apiRouteContent);
     }
+    //adding to sidebar
+    public function createSideNav(){
+        $stub=$this->getStub('SideNav.stub'); 
+        $modelName = $this->name;
+        $modelNameLower = strtolower($modelName);
+        $modelNamePluralLower = strtolower(Str::plural($modelName));
+        $sideNavContent = str_replace(
+            ['{{modelName}}', '{{modelNameLower}}', '{{modelNamePluralLower}}'],
+            [$modelName, $modelNameLower, $modelNamePluralLower],
+            $stub
+        );
+        $this->appendToFile("resources/views/layouts/sidenav-link.blade.php", $sideNavContent);
+    }
 
     protected function getStub($file){
         return File::get(resource_path("stubs/{$file}"));

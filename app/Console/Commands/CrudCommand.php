@@ -9,7 +9,7 @@ use App\Helpers\FileCreator;
 
 class CrudCommand extends Command{
     protected $signature ='auto:crud {name}';
-    protected $description ='Generate model, migration, controller and views for the given model';
+    protected $description ='Generate model, migration, controller, route, api and views for the given model';
     
     public function handle(){
         $name =ucfirst($this-> argument('name'));
@@ -25,6 +25,7 @@ class CrudCommand extends Command{
         $creator->createApiController();//for api controller
         $creator->createWebRoute(); //update and inject new web route for the item into existing web.php
         $creator->createApiRoute(); //update and inject new api route for the item into existing api.php
+        $creator->createSideNav(); //inject in sidebar
 
         $this->info("CRUD for $name created successfully.");
     }

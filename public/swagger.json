@@ -479,190 +479,10 @@
                     }
                 }
             }
-        },
-        "/api/tester": {
-            "get": {
-                "tags": [
-                    "Tester"
-                ],
-                "summary": "Get list of tester",
-                "description": "Returns a paginated list of tester.",
-                "operationId": "getTester",
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Tester"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Tester"
-                ],
-                "summary": "Create a new Tester",
-                "operationId": "createTester",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "name"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Tester created successfully"
-                    }
-                }
-            }
-        },
-        "/api/tester/{tester}": {
-            "get": {
-                "tags": [
-                    "Tester"
-                ],
-                "summary": "Get a specific tester",
-                "operationId": "getTesterById",
-                "parameters": [
-                    {
-                        "name": "tester",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Tester"
-                ],
-                "summary": "Update a Tester by ID (POST + _method=PUT)",
-                "operationId": "updateTesterviaPost",
-                "parameters": [
-                    {
-                        "name": "tester",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "_method"
-                                ],
-                                "properties": {
-                                    "_method": {
-                                        "type": "string",
-                                        "example": "PUT"
-                                    },
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Tester updated successfully"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Tester"
-                ],
-                "summary": "Delete a tester by ID",
-                "operationId": "deleteTester",
-                "parameters": [
-                    {
-                        "name": "tester",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Tester deleted successfully"
-                    }
-                }
-            }
         }
     },
     "components": {
         "schemas": {
-            "Abc": {
-                "title": "Abc",
-                "required": [
-                    "name",
-                    "created_at",
-                    "updated_at"
-                ],
-                "properties": {
-                    "id": {
-                        "description": "Unique identifier for the product",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "name": {
-                        "description": "Name of the product",
-                        "type": "string",
-                        "example": "Book Title"
-                    },
-                    "created_at": {
-                        "description": "Timestamp when the product was last created",
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2023-10-02T12:00:00Z"
-                    },
-                    "updated_at": {
-                        "description": "Timestamp when the product was last updated",
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2023-10-02T12:00:00Z"
-                    }
-                },
-                "type": "object"
-            },
             "Product": {
                 "title": "Product",
                 "required": [
@@ -704,26 +524,6 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2023-10-02T12:00:00Z"
-                    }
-                },
-                "type": "object"
-            },
-            "Tester": {
-                "title": "Tester",
-                "required": [
-                    "name"
-                ],
-                "properties": {
-                    "id": {
-                        "description": "Unique identifier for the product",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "name": {
-                        "description": "Name of the product",
-                        "type": "string",
-                        "example": "Book Title"
                     }
                 },
                 "type": "object"
@@ -788,10 +588,6 @@
         {
             "name": "Products",
             "description": "Products"
-        },
-        {
-            "name": "Tester",
-            "description": "Tester"
         }
     ]
 }
