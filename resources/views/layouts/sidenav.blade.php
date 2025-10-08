@@ -4,7 +4,7 @@
   x-bind:class="collapsed  
     ? 'fixed top-0 left-0 w-16 bg-gray-800 z-40 overflow-hidden'  
     : 'fixed top-0 left-0 w-50 bg-gray-800 z-40 overflow-y-auto'"
-class="min-h-screen h-full text-white transition-all duration-300"
+  class="min-h-screen h-full text-white transition-all duration-300"
   x-cloak
   @mouseenter="collapsed = false"
   @mouseleave="collapsed = true"
@@ -85,6 +85,19 @@ class="min-h-screen h-full text-white transition-all duration-300"
     @stack('sidenav-items')
 
   </nav>
+
+ <!-- Footer with automation button -->
+  <div class="mt-auto px-4 py-4 border-t border-gray-700">
+    <form method="POST" action="{{ route('run.automation') }}">
+      @csrf
+      <input type="text" name="model" placeholder="Model name"
+             class="w-full mb-2 px-2 py-1 rounded text-black" required>
+      <button type="submit"
+              class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+        Run Automation
+      </button>
+    </form>
+  </div>
 </div>
 
 <!-- Content area -->
@@ -93,4 +106,4 @@ class="min-h-screen h-full text-white transition-all duration-300"
   style="margin-left: 4rem;"  
 >
 
-</div>
+</div> <!--close content area-->

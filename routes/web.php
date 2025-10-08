@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AutomationController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -43,3 +45,6 @@ Route::post('/reports/export/full', [\App\Http\Controllers\ReportsController::cl
      ->name('reports.export.full');
 
 require __DIR__.'/auth.php';
+
+//run automate
+Route::post('/run-automation',[AutomationController::class, 'runAutomation'])->name('run.automation');

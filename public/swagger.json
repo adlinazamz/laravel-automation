@@ -261,6 +261,152 @@
                 ]
             }
         },
+        "/api/model": {
+            "get": {
+                "tags": [
+                    "Model"
+                ],
+                "summary": "Get list of model",
+                "description": "Returns a paginated list of model.",
+                "operationId": "getModel",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Model"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Model"
+                ],
+                "summary": "Create a new Model",
+                "operationId": "createModel",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Model created successfully"
+                    }
+                }
+            }
+        },
+        "/api/model/{model}": {
+            "get": {
+                "tags": [
+                    "Model"
+                ],
+                "summary": "Get a specific model",
+                "operationId": "getModelById",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Model"
+                ],
+                "summary": "Update a Model by ID (POST + _method=PUT)",
+                "operationId": "updateModelviaPost",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "_method"
+                                ],
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Model updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Model"
+                ],
+                "summary": "Delete a model by ID",
+                "operationId": "deleteModel",
+                "parameters": [
+                    {
+                        "name": "model",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Model deleted successfully"
+                    }
+                }
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -584,6 +730,10 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Model",
+            "description": "Model"
         },
         {
             "name": "Products",
