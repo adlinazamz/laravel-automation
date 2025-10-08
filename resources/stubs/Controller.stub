@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\{{modelName}};
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class {{modelName}}Controller extends Controller{
     public function index(){
+        $query = {{modelName}}::query();
         ${{modelNameLower}} = $query->latest()->paginate(10);
         return view('{{modelNameLower}}.index', compact('{{modelNameLower}}'))->with('i', (request()->input('page', 1) - 1) * 10);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\{{modelName}};
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use OpenApi\Attributes as OA;
 
 
-class {{modelName}}Controller extends Controller{
+class {{modelName}}ApiController extends Controller{
     
     #[OA\Get(
         path: "/api/{{modelNameLower}}",
@@ -25,7 +26,7 @@ class {{modelName}}Controller extends Controller{
                 description: "Successful operation",
                 content: new OA\JsonContent(
                     type: "array",
-                    items: new OA\Items(ref: "#/components/schemas/{{modelNameLower}}")
+                    items: new OA\Items(ref: "#/components/schemas/{{modelName}}")
                 )
             )
         ]
@@ -48,14 +49,11 @@ class {{modelName}}Controller extends Controller{
                     mediaType: "multipart/form-data",
                     schema: new OA\Schema(
                         type: "object",
-                       /* need to be changed 
-                        required: ["name", "detail", "image"],
+                       /* need to be changed */
+                        required: ["name"],
                         properties: [
-                            new OA\Property(property: "name", type: "string"),
-                            new OA\Property(property: "detail", type: "string"),
-                            new OA\Property(property: "type", type: "string"),
-                            new OA\Property(property: "image", type: "string", format: "binary")
-                        ] */
+                            new OA\Property(property: "name", type: "string")
+                        ] 
                     )
                 )
             ]
@@ -63,7 +61,10 @@ class {{modelName}}Controller extends Controller{
         responses: [new OA\Response(response: 200, description: "{{modelName}} created successfully")]
     )]
     public function store(Request $request){
-        {{modelName}}::create($request-> all());
+        $request->validate(['name' => 'required']);
+        $input = $request->all();
+        ${{modelNameLower}} = {{modelName}}::create($input);
+        
         return response()->json([
                 'message' => '{{modelName}} created successfully',
                 'data' => ${{modelNameLower}}
@@ -71,23 +72,23 @@ class {{modelName}}Controller extends Controller{
     }
 
     #[OA\Get(
-        path: "/api/{{modelNameLower}}/{modelNameLower}",
+        path: "/api/{{modelNameLower}}/{{{modelNameLower}}}",
         summary: "Get a specific {{modelNameLower}}",
         operationId: "get{{modelName}}ById",
         tags: ["{{modelName}}"],
         parameters: [new OA\Parameter(name: "{{modelNameLower}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
         responses: [new OA\Response(response: 200, description: "Successful operation")]
     )]
-    public function show($id){
+    public function show({{modelName}} ${{modelNameLower}}){
         return response()->json(${{modelNameLower}});
     }
 
     #[OA\Post(
-        path: "/api/{{modelNameLower}}/{ {{modelNameLower}} }",
+        path: "/api/{{modelNameLower}}/{{{modelNameLower}}}",
         summary: "Update a {{modelName}} by ID (POST + _method=PUT)",
         operationId: "update{{modelName}}viaPost",
         tags: ["{{modelName}}"],
-        parameters: [new OA\Parameter(name: "{{modelName}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
+        parameters: [new OA\Parameter(name: "{{modelNameLower}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
         requestBody: new OA\RequestBody(
             required: true,
             content: [
@@ -95,30 +96,27 @@ class {{modelName}}Controller extends Controller{
                     mediaType: "multipart/form-data",
                     schema: new OA\Schema(
                         type: "object",
-                        /*change based on the table column
-                        required: ["name", "detail", "type", "image", "_method"],
+                        /*change based on the table column*/
+                        required: ["name", "_method"],
                         properties: [
                             new OA\Property(property: "_method", type: "string", example:"PUT"),
                             new OA\Property(property: "name", type: "string"),
-                            new OA\Property(property: "detail", type: "string"),
-                            new OA\Property(property: "type", type: "string"),
-                            new OA\Property(property: "image", type: "string", format: "binary")
                         ]
-                        */
                     )
                 )
             ]
         ),
         responses: [new OA\Response(response: 200, description: "{{modelName}} updated successfully")]
     )]    
-    public function update(Request $request, $id){
-        ${{modelNameLower}} = {{modelName}}::findOrFail($id);
-        ${{modelNameLower}}->update($request->all());
+    public function update(Request $request, {{modelName}} ${{modelNameLower}}){
+        $request->validate(['name' => 'required']);
+        $input = $request->all();
+        ${{modelNameLower}}->update($input);
         return response()->json(['message' => '{{modelName}} updated successfully.'], 200);
     }
 
     #[OA\Delete(
-        path: "/api/{{modelNameLower}}/{ {{modelNameLowerCase}} }",
+        path: "/api/{{modelNameLower}}/{{{modelNameLower}}}",
         summary: "Delete a {{modelNameLower}} by ID",
         operationId: "delete{{modelName}}",
         tags: ["{{modelName}}"],

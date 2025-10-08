@@ -23,6 +23,8 @@ class CrudCommand extends Command{
         $creator->createController();
         $creator->createViews();
         $creator->createApiController();//for api controller
+        $creator->createWebRoute(); //update and inject new web route for the item into existing web.php
+        $creator->createApiRoute(); //update and inject new api route for the item into existing api.php
 
         $this->info("CRUD for $name created successfully.");
     }

@@ -1,0 +1,8 @@
+//{{modelName}} auto-generated route
+Route::get('/{{modelNameLower}}', [App\Http\Controllers\{{modelName}}Controller::class, 'index'])->name('{{modelNameLower}}.index');
+Route::get('/{{modelNameLower}}/create',[App\Http\Controllers\{{modelName}}Controller::class, 'create'])->name('{{modelNameLower}}.create');
+Route::post('/{{modelNameLower}}', [App\Http\Controllers\{{modelName}}Controller::class, 'store'])->name('{{modelNameLower}}.store');
+Route::get('/{{modelNameLower}}/{{{modelNameLower}}}', [App\Http\Controllers\{{modelName}}Controller::class, 'show'])->name('{{modelNameLower}}.show');
+Route::get('/{{modelNameLower}}/{{{modelNameLower}}}/edit', [App\Http\Controllers\{{modelName}}Controller::class, 'edit'])->name('{{modelNameLower}}.edit');
+Route::put('/{{modelNameLower}}/{{{modelNameLower}}}', [App\Http\Controllers\{{modelName}}Controller::class, 'update'])->name('{{modelNameLower}}.update');
+Route::delete('/{{modelNameLower}}/{{{modelNameLower}}}', [App\Http\Controllers\{{modelName}}Controller::class, 'destroy'])->name('{{modelNameLower}}.destroy');
