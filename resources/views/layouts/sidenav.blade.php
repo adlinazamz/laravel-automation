@@ -93,7 +93,7 @@
       <input type="text" name="model" placeholder="Model name"
              class="w-full mb-2 px-2 py-1 rounded text-black" required>
       <button type="submit"
-              class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+              class="w-full bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-600 transition">
         Run Automation
       </button>
     </form>
