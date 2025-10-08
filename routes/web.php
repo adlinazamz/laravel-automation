@@ -28,3 +28,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//products
+Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
+Route::get('/products/create',[App\Http\Controllers\ProductController::class, 'create'])->name('products.create');
+Route::post('/products', [App\Http\Controllers\ProductController::class, 'store'])->name('products.store');
+Route::get('/products/{product}', [App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{product}/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('products.edit');
+Route::put('/products/{product}', [App\Http\Controllers\ProductController::class, 'update'])->name('products.update');
+Route::delete('/products/{product}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('products.destroy');
+//import export excel
+Route::get('/products-export',[App\Http\Controllers\ProductController::class, 'export'])->name('products.export');
+Route::post('/products-import', [App\Http\Controllers\ProductController::class, 'import'])->name('products.import');
+Route::post('/reports/export/full', [\App\Http\Controllers\ReportsController::class, 'exportFull'])
+     ->name('reports.export.full');
+
+require __DIR__.'/auth.php';
