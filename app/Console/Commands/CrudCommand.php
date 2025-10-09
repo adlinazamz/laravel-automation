@@ -20,7 +20,7 @@ class CrudCommand extends Command{
         //File generating
         $creator->createModel();
         // temp comment out to test dynamic $creator->createMigration();
-        $creator->createDataSeeder(); //run seeding
+        //$creator->createDataSeeder(); //run seeding
         $creator->createController();
         $creator->createViews();
         $creator->createApiController();//for api controller
