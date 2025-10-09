@@ -14,7 +14,8 @@
     <form action="{{ route('{{modelNameLower}}.update',${{modelNameLower}}->id) }}" method="POST" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-
+    {{formFields}}
+    <!--static
     {{-- Name --}}
       <div class="mb-4">
         <label for="inputName" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
@@ -30,7 +31,7 @@
           <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
         @enderror
       </div>
-
+-->
       {{-- Submit --}}
       <div class="flex justify-end">
         <button type="submit" class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded inline-flex items-center">

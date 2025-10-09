@@ -14,8 +14,8 @@ class EventSeeder extends Seeder
     public function run(): void
     {
         $event_seed =[
-            ['id'=>'1', 'name'=>"Picnic", 'description' => "hangout with neighbours with good food", 'detail' =>'Woman only event', 'image'=>'"C:\laragon\www\book_store\public\images\20250917083554.png"', 'location' => 'park', 'date_start' => '9 Jun 2025', 'date_end' => '9 Jun 2025'],
-            ['id'=>'2', 'name'=>"Picnoice", 'description' => "hangout with loud people with no food. just nois", 'detail' =>'Loud people only event', 'image'=>'"C:\laragon\www\book_store\public\images\20250917083554.png"', 'location' => 'parking', 'date_start' => '10 Jun 2025', 'date_end' => '10 Jun 2025'],
+            ['id'=>'1', 'name'=>"Picnic", 'description' => "hangout with neighbours with good food", 'detail' =>'Woman only event', 'location' => 'park', 'date_start' => '9 Jun 2025', 'date_end' => '9 Jun 2025'],
+            ['id'=>'2', 'name'=>"Picnoice", 'description' => "hangout with loud people with no food. just nois", 'detail' =>'Loud people only event','location' => 'parking', 'date_start' => '10 Jun 2025', 'date_end' => '10 Jun 2025'],
         ];
         foreach ($event_seed as $event_seed)
         {

@@ -98,6 +98,22 @@
       </button>
     </form>
   </div>
+  <!--Button to automate event MVC API-->
+      <form method="POST" action="{{ route('run.auto') }}">
+  @csrf
+  <button type="submit"
+          class="w-full bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-600 transition">
+    Run auto Events
+  </button>
+</form>
+<!--Button to automate event MVC API-->
+      <form method="POST" action="{{ route('run.auto') }}">
+  @csrf
+  <button type="submit"
+          class="w-full bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-600 transition">
+    Run auto News
+  </button>
+</form>
 </div>
 
 <!-- Content area -->

@@ -3,4 +3,5 @@ Route::get('/{{modelNameLower}}', [App\Http\Controllers\Api\{{modelName}}ApiCont
 Route::post('/{{modelNameLower}}', [App\Http\Controllers\Api\{{modelName}}ApiController::class, 'store'])->name('api.{{modelNameLower}}.store');
 Route::get('/{{modelNameLower}}/{{{modelNameLower}}}', [App\Http\Controllers\Api\{{modelName}}ApiController::class, 'show'])->name('api.{{modelNameLower}}.show');
 Route::put('/{{modelNameLower}}/{{{modelNameLower}}}', [App\Http\Controllers\Api\{{modelName}}ApiController::class, 'update'])->name('api.{{modelNameLower}}.update');
+Route::post('/{{modelNameLower}}/{{{modelNameLower}}}', [App\Http\Controllers\Api\{{modelName}}ApiController::class, 'updateViaPost'])->name('api.{{modelNameLower}}.updateViaPost');
 Route::delete('/{{modelNameLower}}/{{{modelNameLower}}}', [App\Http\Controllers\Api\{{modelName}}ApiController::class, 'destroy'])->name('api.{{modelNameLower}}.destroy');

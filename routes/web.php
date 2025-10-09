@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AutomationController;
+use App\Http\Controllers\AutoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,3 +49,4 @@ require __DIR__.'/auth.php';
 
 //run automate
 Route::post('/run-automation',[AutomationController::class, 'runAutomation'])->name('run.automation');
+Route::post('/run-auto',[AutoController::class, 'runAuto'])->name('run.auto');

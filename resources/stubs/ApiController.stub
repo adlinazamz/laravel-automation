@@ -50,9 +50,9 @@ class {{modelName}}ApiController extends Controller{
                     schema: new OA\Schema(
                         type: "object",
                        /* need to be changed */
-                        required: ["name"],
+                        required: [{{swaggerRequired}}],
                         properties: [
-                            new OA\Property(property: "name", type: "string")
+                            {{swaggerProperties}}
                         ] 
                     )
                 )
@@ -96,12 +96,11 @@ class {{modelName}}ApiController extends Controller{
                     mediaType: "multipart/form-data",
                     schema: new OA\Schema(
                         type: "object",
-                        /*change based on the table column*/
-                        required: ["name", "_method"],
+                        required: [{{swaggerRequired}}],
                         properties: [
-                            new OA\Property(property: "_method", type: "string", example:"PUT"),
-                            new OA\Property(property: "name", type: "string"),
-                        ]
+                            {{swaggerProperties}},
+                            new OA\Property(property:"_method", type: "string", example:"PUT")
+                        ] 
                     )
                 )
             ]
