@@ -67,7 +67,7 @@
         @click="$dispatch('open-dev-crud')"
         class="w-full px-2 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
     >
-        ⚙️ Dev CRUD
+        Dev CRUD
     </button>
   </div>
 </div><!-- close sidebar -->
