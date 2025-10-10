@@ -43,7 +43,7 @@ class FileCreator{
             $nullable = $col->Null ==='YES';
             $name = $col->Field;
 
-        if (Str::startWith($type, 'varchar')){
+        if (Str::startsWith($type, 'varchar')){
             preg_match('/varchar\((\d+)\)/', $type, $match);
             $max = $match[1]?? 255;
             $rules[$name] = ($nullable ? 'nullable' :'required') . "|string|max:$max";
@@ -190,10 +190,10 @@ HTML;
         $modelNamePluralLower = strtolower(Str::plural($modelName));
         $table=strtolower(Str::plural($modelName));
         $columns=$this->getSchemaDetails($table);
-        $swagger=$this->generateSwaggerAnnotations($columns);
+        $validationRules = $this->generateValidationRules($columns);        $swagger=$this->generateSwaggerAnnotations($columns);
         $controllerApiContent = str_replace(
-            ['{{modelName}}', '{{modelNameLower}}', '{{modelNamePluralLower}}', '{{swaggerRequired}}', '{{swaggerProperties}}'],
-            [$modelName, $modelNameLower, $modelNamePluralLower, $swagger['swaggerRequired'], $swagger['swaggerProperties']],
+            ['{{modelName}}', '{{modelNameLower}}', '{{modelNamePluralLower}}', '{{swaggerRequired}}', '{{swaggerProperties}}', '{{validationRules}}'],
+            [$modelName, $modelNameLower, $modelNamePluralLower, $swagger['swaggerRequired'], $swagger['swaggerProperties'], $validationRules],
             $stub
         );
         $this->saveFile("app/Http/Controllers/Api/{$this->name}ApiController.php", $controllerApiContent);

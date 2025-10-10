@@ -21,8 +21,7 @@ class DatabaseSeeder extends Seeder
         // ]);
     
         $this ->call(ProductSeeder::class);
-        $this ->call(EventSeeder::class);
+        //$this ->call(EventSeeder::class);
         //$this ->call(NewsSeeder::class);
-        //here to put the call for other seeding 
     }
 }

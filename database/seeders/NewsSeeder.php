@@ -19,7 +19,7 @@ class NewsSeeder extends Seeder
         ];
         foreach ($news_seed as $news_seed)
         {
-            Event::firstOrCreate($news_seed);
+            News::firstOrCreate($news_seed);
         }
     }
 }

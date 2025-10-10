@@ -49,7 +49,6 @@ class {{modelName}}ApiController extends Controller{
                     mediaType: "multipart/form-data",
                     schema: new OA\Schema(
                         type: "object",
-                       /* need to be changed */
                         required: [{{swaggerRequired}}],
                         properties: [
                             {{swaggerProperties}}
@@ -61,7 +60,9 @@ class {{modelName}}ApiController extends Controller{
         responses: [new OA\Response(response: 200, description: "{{modelName}} created successfully")]
     )]
     public function store(Request $request){
-        $request->validate(['name' => 'required']);
+        $request->validate([
+            {{validationRules}}
+        ]);
         $input = $request->all();
         ${{modelNameLower}} = {{modelName}}::create($input);
         
@@ -108,7 +109,9 @@ class {{modelName}}ApiController extends Controller{
         responses: [new OA\Response(response: 200, description: "{{modelName}} updated successfully")]
     )]    
     public function update(Request $request, {{modelName}} ${{modelNameLower}}){
-        $request->validate(['name' => 'required']);
+        $request->validate([
+            {{validationRules}}
+        ]);
         $input = $request->all();
         ${{modelNameLower}}->update($input);
         return response()->json(['message' => '{{modelName}} updated successfully.'], 200);
