@@ -19,6 +19,7 @@ class ProductApiController extends Controller
     #[OA\Get(
         path: "/api/products",
         summary: "Get list of products",
+        security:[["bearerAuth"=>[]]],
         operationId: "getProducts",
         tags: ["Products"],
         description: "Returns a paginated list of products.",
@@ -61,6 +62,7 @@ class ProductApiController extends Controller
     #[OA\Get(
         path: "/api/products-export",
         summary: "Export list of products",
+        security:[["bearerAuth"=>[]]],
         operationId: "exportProducts",
         tags: ["Products"],
         description: "Exports a list of products to an Excel file.",
@@ -74,6 +76,7 @@ class ProductApiController extends Controller
     #[OA\Post(
         path: "/api/products-import",
         summary: "Import products list from Excel file",
+        security:[["bearerAuth"=>[]]],
         operationId: "importProducts",
         tags: ["Products"],
         requestBody: new OA\RequestBody(
@@ -101,6 +104,7 @@ class ProductApiController extends Controller
     #[OA\Post(
         path: "/api/products",
         summary: "Create a new product",
+        security:[["bearerAuth"=>[]]],
         operationId: "createProduct",
         tags: ["Products"],
         requestBody: new OA\RequestBody(
@@ -144,6 +148,7 @@ class ProductApiController extends Controller
     #[OA\Get(
         path: "/api/products/{product}",
         summary: "Get a specific product",
+        security:[["bearerAuth"=>[]]],
         operationId: "getProductById",
         tags: ["Products"],
         parameters: [new OA\Parameter(name: "product", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -157,6 +162,7 @@ class ProductApiController extends Controller
     #[OA\Post(
         path: "/api/products/{product}",
         summary: "Update a product by ID (POST + _method=PUT)",
+        security:[["bearerAuth"=>[]]],
         operationId: "updateProductviaPost",
         tags: ["Products"],
         parameters: [new OA\Parameter(name: "product", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -201,6 +207,7 @@ class ProductApiController extends Controller
     #[OA\Delete(
         path: "/api/products/{product}",
         summary: "Delete a product by ID",
+        security:[["bearerAuth"=>[]]],
         operationId: "deleteProduct",
         tags: ["Products"],
         parameters: [new OA\Parameter(name: "product", in: "path", required: true, schema: new OA\Schema(type: "integer"))],

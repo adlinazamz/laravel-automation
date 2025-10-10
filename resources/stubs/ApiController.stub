@@ -17,6 +17,7 @@ class {{modelName}}ApiController extends Controller{
     #[OA\Get(
         path: "/api/{{modelNameLower}}",
         summary: "Get list of {{modelNameLower}}",
+        security:[["bearerAuth"=>[]]],
         operationId: "get{{modelName}}",
         tags: ["{{modelName}}"],
         description: "Returns a paginated list of {{modelNameLower}}.",
@@ -40,6 +41,7 @@ class {{modelName}}ApiController extends Controller{
  #[OA\Post(
         path: "/api/{{modelNameLower}}",
         summary: "Create a new {{modelName}}",
+        security:[["bearerAuth"=>[]]],
         operationId: "create{{modelName}}",
         tags: ["{{modelName}}"],
         requestBody: new OA\RequestBody(
@@ -75,6 +77,7 @@ class {{modelName}}ApiController extends Controller{
     #[OA\Get(
         path: "/api/{{modelNameLower}}/{{{modelNameLower}}}",
         summary: "Get a specific {{modelNameLower}}",
+        security:[["bearerAuth"=>[]]],
         operationId: "get{{modelName}}ById",
         tags: ["{{modelName}}"],
         parameters: [new OA\Parameter(name: "{{modelNameLower}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -87,6 +90,7 @@ class {{modelName}}ApiController extends Controller{
     #[OA\Post(
         path: "/api/{{modelNameLower}}/{{{modelNameLower}}}",
         summary: "Update a {{modelName}} by ID (POST + _method=PUT)",
+        security:[["bearerAuth"=>[]]],
         operationId: "update{{modelName}}viaPost",
         tags: ["{{modelName}}"],
         parameters: [new OA\Parameter(name: "{{modelNameLower}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -120,6 +124,7 @@ class {{modelName}}ApiController extends Controller{
     #[OA\Delete(
         path: "/api/{{modelNameLower}}/{{{modelNameLower}}}",
         summary: "Delete a {{modelNameLower}} by ID",
+        security:[["bearerAuth"=>[]]],
         operationId: "delete{{modelName}}",
         tags: ["{{modelName}}"],
         parameters: [new OA\Parameter(name: "{{modelNameLower}}", in: "path", required: true, schema: new OA\Schema(type: "integer"))],

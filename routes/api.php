@@ -26,18 +26,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-//products
-        Route::get('/products', [ProductApiController::class, 'index'])->name('api.products.index');
-        Route::post('/products', [ProductApiController::class, 'store'])->name('api.products.store');
-        Route::get('/products/{product}', [ProductApiController::class, 'show'])->name('api.products.show');
-        Route::put('/products/{product}', [ProductApiController::class, 'update'])->name('api.products.update');
-        Route::post('/products/{product}', [ProductApiController::class, 'updateViaPost'])->name('api.products.updateViaPost');
+Route::middleware('auth:api')->group(function () {
+    //products
+    Route::get('/products', [ProductApiController::class, 'index'])->name('api.products.index');
+    Route::post('/products', [ProductApiController::class, 'store'])->name('api.products.store');
+    Route::get('/products/{product}', [ProductApiController::class, 'show'])->name('api.products.show');
+    Route::put('/products/{product}', [ProductApiController::class, 'update'])->name('api.products.update');
+    Route::post('/products/{product}', [ProductApiController::class, 'updateViaPost'])->name('api.products.updateViaPost');
+    Route::delete('/products/{product}', [ProductApiController::class, 'destroy'])->name('api.products.destroy');
 
-        Route::delete('/products/{product}', [ProductApiController::class, 'destroy'])->name('api.products.destroy');
-        //import export excel
-        Route::get('/products-export',[ProductApiController::class, 'export'])->name('api.products.export');
-        Route::post('/products-import', [ProductApiController::class, 'import'])->name('api.products.import');
-
+    //import export excel
+    Route::get('/products-export', [ProductApiController::class, 'export'])->name('api.products.export');
+    Route::post('/products-import', [ProductApiController::class, 'import'])->name('api.products.import');
+});
 Route::group([
     'middleware'=>'api',
     'prefix' => 'auth'

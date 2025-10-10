@@ -283,7 +283,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -325,7 +330,12 @@
                     "200": {
                         "description": "Product created successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/products-export": {
@@ -340,7 +350,12 @@
                     "200": {
                         "description": "Successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/products-import": {
@@ -373,7 +388,12 @@
                     "201": {
                         "description": "Products imported successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/products/{product}": {
@@ -397,7 +417,12 @@
                     "200": {
                         "description": "Successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -455,7 +480,12 @@
                     "200": {
                         "description": "Product updated successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -477,7 +507,12 @@
                     "200": {
                         "description": "Product deleted successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
