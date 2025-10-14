@@ -285,7 +285,7 @@ if ($view === 'edit') {
     }
 
     protected function getStub($file){
-        return File::get(resource_path("stubs/{$file}"));
+        return File::get(resource_path("stubs/legacy/{$file}"));
     }
     protected function saveFile($path, $content){
         File::ensureDirectoryExists(dirname(base_path($path)));
