@@ -73,7 +73,7 @@ class FileCreator{
                 $properties[]="new OA\\Property(property: \"$name\", type:\"integer\", example: 123)"; 
             }
             elseif(Str::startsWith($type, 'date')){
-                $properties[]="newOA\\Property(property: \"$name\", type:\"string\", format:\"date\", example: \"2025-01-01\")";
+                $properties[]="new OA\\Property(property: \"$name\", type:\"string\", format:\"date\", example: \"2025-01-01\")";
             }
         }
         return ['swaggerRequired' =>implode(', ', $required),
