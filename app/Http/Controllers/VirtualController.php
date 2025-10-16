@@ -71,25 +71,25 @@ class VirtualController extends Controller
             'showFields' => $showFields,
         ]);
     }
-    public function edit($table,$id){
-        $columns  = VirCreator::getSchema($table);
-        $model = VirCreator::virtualModel($table);
-        $modelName = ucfirst($table);
-        $row=VirCreator::handle($table, 'show', $id);
-        $creator = new \App\Helpers\VirCreator();
-        $modelNameLower = strtolower($modelName);
-        $formFields = $creator->generateFormFields($columns, 'edit', $modelNameLower);
+    public function edit($table, $id)
+{
+    $columns = VirCreator::getSchema($table);
+    $modelName = ucfirst($table);
+    $modelNameLower = strtolower($modelName);
+    $row = VirCreator::handle($table, 'show', $id);
 
-        return view('virtual::edit',[
-            'table'=>$table,
-            'modelName' => ucfirst($table),
-            'modelNameLower' => strtolower($table),
-            'id'=>$id, 
-            strtolower($table)=>$row,
-            'fields' => array_keys($model['fields']),
-            'formFields' => $formFields,
-        ]);
-    }
+    $creator = new \App\Helpers\VirCreator();
+    $formFields = $creator->generateFormFields($columns, 'edit', $modelNameLower, $row);
+
+    return view('virtual::edit', [
+        'modelName' => $modelName,
+        'modelNameLower' => $modelNameLower,
+        'id' => $id,
+        $modelNameLower => $row,
+        'formFields' => $formFields,
+    ]);
+}
+
     /**
      * Update the specified resource in storage.
      */
@@ -97,10 +97,7 @@ class VirtualController extends Controller
     {
         $data = $request->except(['_token','_method']);
         $data['updated_at'] = now();
-        VirCreator::handle($table, 'update', [
-            'id' => $id,
-            'data' => $data,
-        ]);
+        VirCreator::handle($table, 'update',$id,$data);
 
         return redirect()
             ->route('virtual.index', ['table' => $table])

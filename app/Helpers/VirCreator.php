@@ -77,44 +77,91 @@ class VirCreator
         }
         return implode("\n", $fields);
     }
-    public function generateFormFields($columns, $mode = 'create', $modelNameLower = '', $row=null){
-        $fields=[];
-        foreach ($columns as $col){
-            $name=$col->Field;
-            $type=$col->Type;
-            $nullable=$col->Null==='YES';
-            if (in_array($name, ['id', 'created_at', 'updated_at'])){
-                continue;
-            }
-            $inputType= 'text';
-            if (Str::startsWith($type, 'int')){
-                $inputType ='number';
-            }
-            elseif(Str::startsWith($type,'date')){
-                $inputType ='date';
-            }
-             $valueAttr = '';
-            if ($mode === 'edit') {
-                $valueAttr = "value=\"{{ \${$modelNameLower}->{$name} }}\"";
-            }
 
-            $fields[] = <<<HTML
-            <div class="mb-4">
-            <label for="input{$name}" class="block text-sm font-medium text-gray-700 mb-1">{$name}:</label>
-            <input
-                type="{$inputType}"
-                name="{$name}"
-                id="input{$name}"
-                placeholder="{$name}"
-                {$valueAttr}
-                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('{$name}') border-red-500 @enderror"
-            >
-            </div>
-            HTML;
+    public function generateFormFields($columns, $mode = 'create', $modelNameLower = '', $row = null)
+{
+    $fields = [];
+
+    foreach ($columns as $col) {
+        $name = $col->Field;
+        $type = $col->Type;
+
+        // Skip system fields
+        if (in_array($name, ['id', 'created_at', 'updated_at'])) {
+            continue;
+        }
+
+        // Determine input type
+        $inputType = 'text';
+        if (Str::startsWith($type, 'int')) {
+            $inputType = 'number';
+        } elseif (Str::startsWith($type, 'date')) {
+            $inputType = 'date';
+        } elseif (Str::startsWith($type, ['tinyint(1)', 'boolean'])) {
+            $inputType = 'checkbox';
+        }
+
+        // Get value for edit mode
+        $value = ($mode === 'edit' && $row) ? ($row->$name ?? '') : '';
+
+        // Handle text areas
+        if (Str::contains($type, ['text', 'blob'])) {
+            $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+
+            $fieldHTML = <<<HTML
+<div class="mb-4">
+  <label for="input{$name}" class="block text-sm font-medium text-gray-700 mb-1">{$name}:</label>
+  <textarea
+      name="{$name}"
+      id="input{$name}"
+      placeholder="{$name}"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('{$name}') border-red-500 @enderror"
+  >{$safeValue}</textarea>
+</div>
+HTML;
+        }
+        // Handle checkbox
+        elseif ($inputType === 'checkbox') {
+            $checked = ($value == 1 || $value === true) ? 'checked' : '';
+
+            $fieldHTML = <<<HTML
+<div class="mb-4 flex items-center">
+  <input
+      type="checkbox"
+      name="{$name}"
+      id="input{$name}"
+      {$checked}
+      class="mr-2 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+  >
+  <label for="input{$name}" class="text-sm font-medium text-gray-700">{$name}</label>
+</div>
+HTML;
+        }
+        // Default text/number/date inputs
+        else {
+            $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+
+            $fieldHTML = <<<HTML
+<div class="mb-4">
+  <label for="input{$name}" class="block text-sm font-medium text-gray-700 mb-1">{$name}:</label>
+  <input
+      type="{$inputType}"
+      name="{$name}"
+      id="input{$name}"
+      placeholder="{$name}"
+      value="{$safeValue}"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('{$name}') border-red-500 @enderror"
+  >
+</div>
+HTML;
+        }
+
+        $fields[] = $fieldHTML;
     }
 
     return implode("\n", $fields);
 }
+
 
 
     /**
