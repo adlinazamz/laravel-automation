@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\{{modelName}};
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class {{modelName}}Controller extends Controller{
+    public function index(){
+        $query = {{modelName}}::query();
+        ${{modelNameLower}} = $query->latest()->paginate(10);
+        return view('{{modelNameLower}}.index', compact('{{modelNameLower}}'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+    public function create(){
+        return view('{{modelNameLower}}.create');
+    }
+    public function store(Request $request){
+        {{modelName}}::create($request-> all());
+        return redirect()->route('{{modelNameLower}}.index');
+    }
+    public function show($id){
+        ${{modelNameLower}}={{modelName}}::findOrFail($id);
+        return view('{{modelNameLower}}.show', compact('{{modelNameLower}}'));
+    }
+    public function edit($id){
+        ${{modelNameLower}}={{modelName}}::findOrFail($id);
+        return view('{{modelNameLower}}.edit', compact('{{modelNameLower}}'));
+    }
+    public function update(Request $request, $id){
+        ${{modelNameLower}} = {{modelName}}::findOrFail($id);
+        ${{modelNameLower}}->update($request->all());
+        return redirect()->route('{{modelNameLower}}.index');
+    }
+    public function destroy($id){
+        {{modelName}}::destroy($id);
+        return redirect()->route('{{modelNameLower}}.index');
+    }
+}

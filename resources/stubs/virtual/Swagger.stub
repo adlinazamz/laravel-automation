@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use OpenApi\Annotations as OA;
+use OpenApi\Generator;
+
+class VirtualSwaggerController
+{
+    public function generate()
+    {
+        $openapi = \OpenApi\scan(base_path('app/Http/Controllers/Api'));
+        return response($openapi->toJson(), 200)->header('Content-Type', 'application/json');
+    }
+}

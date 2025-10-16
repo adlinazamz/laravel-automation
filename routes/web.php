@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AutomationController;
 use App\Http\Controllers\AutoController;
+use App\Http\Controllers\VirtualController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +50,20 @@ Route::post('/reports/export/full', [\App\Http\Controllers\ReportsController::cl
 require __DIR__.'/auth.php';
 
 //run automate
-Route::post('/run-automation',[AutomationController::class, 'runAutomation'])->name('run.automation');
+//Route::post('/run-automation',[AutomationController::class, 'runAutomation'])->name('run.automation');
+Route::get('/tables', [AutomationController::class, 'listTables'])->name('tables.list');
+Route::post('/run-virtual', [AutomationController::class, 'runAutomation']);
+
 
 Route::get('/tables', [AutoController::class, 'listTables'])->name('tables.list');
 Route::post('/run-auto',[AutoController::class, 'runAuto'])->name('run.auto');
+
+Route::prefix('virtual')->middleware(['web'])->group(function () {
+    Route::get('/{table}', [VirtualController::class, 'index'])->name('virtual.index');
+    Route::get('/{table}/create', [VirtualController::class, 'create'])->name('virtual.create');
+    Route::post('/{table}', [VirtualController::class, 'store'])->name('virtual.store');
+    Route::get('/{table}/{id}', [VirtualController::class, 'show'])->name('virtual.show');
+    Route::get('/{table}/{id}/edit', [VirtualController::class, 'edit'])->name('virtual.edit');
+    Route::put('/{table}/{id}', [VirtualController::class, 'update'])->name('virtual.update');
+    Route::delete('/{table}/{id}', [VirtualController::class, 'destroy'])->name('virtual.destroy');
+});

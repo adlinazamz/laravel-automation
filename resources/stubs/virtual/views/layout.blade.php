@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="ml-8 text-xl font-semibold text-black dark:text-black">
-            {{ __('Products') }}
+            {{ __($modelName ?? ucfirst($table)) }}
         </h2>
     </x-slot>
 

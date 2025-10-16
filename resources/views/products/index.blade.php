@@ -1,7 +1,7 @@
 @extends('products.layout')
 @section('content')
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<div class="ml-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
     <!-- Import/Export Section -->
     <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-6">

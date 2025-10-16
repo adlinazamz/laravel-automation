@@ -169,6 +169,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\LaravelAutoServiceProvider::class,    
+        App\Providers\ViewNamespaceServiceProvider::class,
+
         ])->toArray(),
 
     /*

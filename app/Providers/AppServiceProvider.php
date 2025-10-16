@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-Paginator::useTailwind();
+        Paginator::useTailwind();
+        View::addNamespace('virtual', resource_path('stubs/virtual/views'));
+        Log::info('View paths', ['paths' => app('view')->getFinder()->getPaths()]);
+
     }
 }

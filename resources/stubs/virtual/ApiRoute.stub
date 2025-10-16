@@ -1,0 +1,7 @@
+Route::prefix('api/virtual')->middleware('auth:api')->group(function () {
+    Route::get('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'index']);
+    Route::post('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'store']);
+    Route::get('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'show']);
+    Route::put('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'update']);
+    Route::delete('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'destroy']);
+});
