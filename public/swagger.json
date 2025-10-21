@@ -514,6 +514,120 @@
                     }
                 ]
             }
+        },
+        "/api/virtual/{table}": {
+            "get": {
+                "tags": [
+                    "Virtual API"
+                ],
+                "summary": "List records of a given table",
+                "operationId": "215c02b9af32707b6d840026cdbde33e",
+                "parameters": [
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Virtual API"
+                ],
+                "summary": "Insert a new record into a given table",
+                "operationId": "1a7786fd69a5d7833449f5fe901cc0ac",
+                "parameters": [
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/api/virtual/{table}/{id}": {
+            "get": {
+                "tags": [
+                    "Virtual API"
+                ],
+                "summary": "Show a record by ID",
+                "operationId": "dfc0607ae69deeab294a84a767495d0d",
+                "parameters": [
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Virtual API"
+                ],
+                "summary": "Update record by ID",
+                "operationId": "6c2b808da64bd62ce50f610108766033",
+                "parameters": [
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Virtual API"
+                ],
+                "summary": "Delete record by ID",
+                "operationId": "93752338fd0cab153276dc1e091ce7f0",
+                "parameters": [
+                    {
+                        "name": "table",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -623,6 +737,10 @@
         {
             "name": "Products",
             "description": "Products"
+        },
+        {
+            "name": "Virtual API",
+            "description": "Virtual API"
         }
     ]
 }

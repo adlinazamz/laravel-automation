@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- Bootstrap Datepicker CSS -->
-        @stack('styles')
+    @stack('styles')
     </head>
 
     <body class="h-full font-sans antialiased bg-gray-100"> {{-- ✅ Add class="h-full" here --}}
@@ -91,16 +91,62 @@
         </div>
 
         <!-- JS Scripts -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <!-- Load jQuery first for any jQuery-dependent plugins (datepicker, daterangepicker, etc) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script><!--flowbite wrapper apexcharts-->
         <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
         @yield('scripts')
+            <script>
+                // Initialize bootstrap-datepicker on elements marked by the generator
+                document.addEventListener('DOMContentLoaded', function () {
+                    if (!window.jQuery) {
+                        console.warn('datepicker init: window.jQuery not found');
+                        return;
+                    }
+
+                    if (typeof window.jQuery.fn.datepicker !== 'function') {
+                        console.warn('datepicker init: bootstrap-datepicker plugin not available on jQuery.fn.datepicker');
+                        return;
+                    }
+
+                    window.jQuery('.datepicker').each(function () {
+                        var $el = window.jQuery(this);
+                        if (!$el.data('datepicker')) {
+                            $el.datepicker({
+                                autoclose: true,
+                                todayHighlight: true,
+                                format: 'dd-mm-yyyy'
+                            });
+                        }
+
+                        // If the input has a raw value in a different format, try to parse it
+                        var raw = $el.val();
+                        if (raw) {
+                            // try multiple common formats: dmy, ymd, ddmmyy
+                            var m = moment(raw, ['DD-MM-YYYY','D-M-YYYY','YYYY-MM-DD','DDMMYY','DMMYY','DD/MM/YYYY','D/M/YYYY'], true);
+                            if (!m.isValid()) {
+                                // try loose parsing
+                                m = moment(raw);
+                            }
+                            if (m.isValid()) {
+                                $el.datepicker('update', m.format('DD-MM-YYYY'));
+                            }
+                        }
+                    });
+                });
+            </script>
+            <!-- Image modal -->
+            <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+                <button id="image-modal-close" class="absolute top-4 right-4 text-white text-2xl">&times;</button>
+                <div class="max-w-[90vw] max-h-[90vh] p-4">
+                    <img id="image-modal-img" src="" alt="" class="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded" />
+                </div>
+            </div>
     </body>
 </html>

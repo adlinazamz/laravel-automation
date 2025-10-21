@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 
 /**
@@ -100,6 +101,18 @@ class VirCreator
         } elseif (Str::startsWith($type, ['tinyint(1)', 'boolean'])) {
             $inputType = 'checkbox';
         }
+            $isDate = false;
+            if (Str::startsWith($type, 'int')) {
+                $inputType = 'number';
+            } elseif (Str::startsWith($type, 'date')) {
+                // Use a text input and mark it with .datepicker so bootstrap-datepicker
+                // can attach a calendar UI. Native type=date may not use the bootstrap
+                // widget consistently across browsers.
+                $inputType = 'text';
+                $isDate = true;
+            } elseif (Str::startsWith($type, ['tinyint(1)', 'boolean'])) {
+                $inputType = 'checkbox';
+            }
 
         // Get value for edit mode
         $value = ($mode === 'edit' && $row) ? ($row->$name ?? '') : '';
@@ -108,15 +121,15 @@ class VirCreator
         if (Str::contains($type, ['text', 'blob'])) {
             $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
-            $fieldHTML = <<<HTML
+                        $fieldHTML = <<<HTML
 <div class="mb-4">
-  <label for="input{$name}" class="block text-sm font-medium text-gray-700 mb-1">{$name}:</label>
-  <textarea
-      name="{$name}"
-      id="input{$name}"
-      placeholder="{$name}"
-      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('{$name}') border-red-500 @enderror"
-  >{$safeValue}</textarea>
+    <label for="input{$name}" class="block text-sm font-medium text-gray-200 mb-1">{$name}:</label>
+    <textarea
+            name="{$name}"
+            id="input{$name}"
+            placeholder="{$name}"
+            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 @error('{$name}') border-red-500 @enderror"
+    >{$safeValue}</textarea>
 </div>
 HTML;
         }
@@ -124,42 +137,81 @@ HTML;
         elseif ($inputType === 'checkbox') {
             $checked = ($value == 1 || $value === true) ? 'checked' : '';
 
-            $fieldHTML = <<<HTML
+                        $fieldHTML = <<<HTML
 <div class="mb-4 flex items-center">
-  <input
-      type="checkbox"
-      name="{$name}"
-      id="input{$name}"
-      {$checked}
-      class="mr-2 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-  >
-  <label for="input{$name}" class="text-sm font-medium text-gray-700">{$name}</label>
+    <input
+            type="checkbox"
+            name="{$name}"
+            id="input{$name}"
+            {$checked}
+            class="mr-2 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-500 rounded"
+    >
+    <label for="input{$name}" class="text-sm font-medium text-gray-200">{$name}</label>
 </div>
 HTML;
         }
         // Default text/number/date inputs
         else {
-            $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                        $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
-            $fieldHTML = <<<HTML
-<div class="mb-4">
-  <label for="input{$name}" class="block text-sm font-medium text-gray-700 mb-1">{$name}:</label>
-  <input
-      type="{$inputType}"
-      name="{$name}"
-      id="input{$name}"
-      placeholder="{$name}"
-      value="{$safeValue}"
-      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('{$name}') border-red-500 @enderror"
-  >
-</div>
-HTML;
+                        // For date fields, add the 'datepicker' class and a canonical data-date-format
+                        $dateClass = $isDate ? ' datepicker' : '';
+                        $dateAttr = $isDate ? ' data-date-format="yyyy-mm-dd"' : '';
+
+                                                // If this is a date input, render with a calendar icon wrapper so we can
+                                                // provide a visible affordance that opens the datepicker.
+                                        if ($isDate) {
+                                                            $fieldHTML = <<<HTML
+                                <div class="mb-4">
+                                    <label for="input{$name}" class="block text-sm font-medium text-gray-200 mb-1">{$name}:</label>
+                                    <div class="relative">
+                                        <input
+                                            type="{$inputType}"
+                                            name="{$name}"
+                                            id="input{$name}"
+                                            placeholder="{$name}"
+                                            value="{$safeValue}"
+                                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary-600 @error('{$name}') border-red-500 @enderror datepicker"
+                                            data-date-format="yyyy-mm-dd"
+                                        >
+                                        <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 js-datepicker-toggle" data-target="#input{$name}" aria-label="Open date picker">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                HTML;
+                                                        } else {
+                                                            $fieldHTML = <<<HTML
+                                <div class="mb-4">
+                                    <label for="input{$name}" class="block text-sm font-medium text-gray-200 mb-1">{$name}:</label>
+                                    <input
+                                            type="{$inputType}"
+                                            name="{$name}"
+                                            id="input{$name}"
+                                            placeholder="{$name}"
+                                            value="{$safeValue}"
+                                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 @error('{$name}') border-red-500 @enderror"
+                                    >
+                                </div>
+                                HTML;
+                                                        }
         }
 
         $fields[] = $fieldHTML;
     }
 
-    return implode("\n", $fields);
+    $out = implode("\n", $fields);
+
+    // Dump generated form HTML to storage for debugging (virtual generator)
+    try {
+        $debugPath = storage_path("debug_virtual_" . ($modelNameLower ?: 'form') . ".html");
+        file_put_contents($debugPath, $out);
+        Log::info('VirCreator: dumped generated form to', ['path' => $debugPath]);
+    } catch (\Throwable $e) {
+        Log::warning('VirCreator: failed to write debug form file', ['err' => $e->getMessage()]);
+    }
+
+    return $out;
 }
 
 
@@ -173,7 +225,7 @@ HTML;
 
         switch ($action) {
             case 'index':
-                return DB::table($table)->paginate(20);
+                return DB::table($table)->paginate(10);
 
             case 'show':
                 return DB::table($table)->find($id);
@@ -193,6 +245,57 @@ HTML;
         }
         Log::info('VirCreator: completed CRUD handler', ['status'=> 'ok']);
 
+    }
+
+    /**
+     * Normalize date-like fields in a payload to YYYY-MM-DD before storing.
+     * Accepts common input formats and attempts strict parsing first.
+     */
+    public static function normalizeDates(string $table, array $payload): array
+    {
+        $columns = self::getSchema($table);
+        $dateFields = array_filter($columns, fn($c) => Str::startsWith($c->Type ?? '', 'date'));
+
+        if (empty($dateFields)) return $payload;
+
+        $formats = ['d-m-Y','d/m/Y','Y-m-d','Y/m/d','d.m.Y','d M Y','D-M-YY'];
+
+        foreach ($dateFields as $col) {
+            $name = $col->Field;
+            if (!array_key_exists($name, $payload)) continue;
+            $val = trim((string)($payload[$name] ?? ''));
+            if ($val === '') continue;
+
+            $normalized = null;
+            // try strict formats first
+            foreach ($formats as $fmt) {
+                try {
+                    $dt = Carbon::createFromFormat($fmt, $val);
+                    if ($dt && $dt->format($fmt) === $val) {
+                        $normalized = $dt->format('Y-m-d');
+                        break;
+                    }
+                } catch (\Exception $e) {
+                    // continue
+                }
+            }
+
+            if (!$normalized) {
+                // try loose parse
+                try {
+                    $dt = Carbon::parse($val);
+                    $normalized = $dt->format('Y-m-d');
+                } catch (\Exception $e) {
+                    Log::warning('VirCreator: failed to parse date field', ['field' => $name, 'value' => $val]);
+                }
+            }
+
+            if ($normalized) {
+                $payload[$name] = $normalized;
+            }
+        }
+
+        return $payload;
     }
 
     /**
@@ -248,8 +351,8 @@ HTML;
     foreach ($fields as $name) {
         if (in_array($name, ['id', 'created_at', 'updated_at'])) continue;
         $html .= "<div class='mb-4'>\n";
-        $html .= "  <label class='block mb-1 text-sm font-medium'>{$name}</label>\n";
-        $html .= "  <input name='{$name}' class='w-full border rounded px-3 py-2' placeholder='{$name}'>\n";
+        $html .= "  <label class='block mb-1 text-sm font-medium text-gray-200'>{$name}</label>\n";
+        $html .= "  <input name='{$name}' class='w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2' placeholder='{$name}'>\n";
         $html .= "</div>\n";
     }
 

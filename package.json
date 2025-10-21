@@ -28,6 +28,7 @@
         "@tailwindplus/elements": "^1.0.13",
         "apexcharts": "^3.54.1",
         "flowbite": "^3.1.2",
-        "jquery": "^3.7.1"
+        "jquery": "^3.7.1",
+        "bootstrap-datepicker": "^1.9.0"
     }
 }

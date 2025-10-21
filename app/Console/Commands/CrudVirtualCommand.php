@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Helpers\VirCreator;//virtual
+use App\Helpers\VirtualApiManager; //manage api creation on virtual
 use Illuminate\Support\Facades\Log;
 
 class CrudVirtualCommand extends Command{
@@ -30,6 +31,9 @@ class CrudVirtualCommand extends Command{
         $this->line($html);
 
         Log::info('CrudVirtualCommand: completed CRUD and sidenav/web route updates');
+        VirtualApiManager::ensureApiIsReady();
+        Log::info('CrudVirtualCommand: Virtual API verified and Swagger refreshed.');
+        $this->info('Virtual APi and Swagger documentation updated.');
     } catch (\Throwable $e) {
         $this->error("Error: " . $e->getMessage());
         Log::error('CrudVirtualCommand error', ['message' => $e->getMessage()]);

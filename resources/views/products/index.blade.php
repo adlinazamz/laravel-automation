@@ -7,14 +7,17 @@
     <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-6">
         <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="flex items-center gap-2">
             @csrf
-            <input type="file" name="file" class="block w-48 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
-            <button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs import-button">
-                <i class="fa fa-file"></i> Import
+            <label class="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-2 rounded cursor-pointer">
+                <input type="file" name="file" class="hidden file-input">
+                <i class="fa fa-file mr-2"></i> Upload
+            </label>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm import-button">
+                <i class="fa fa-file-import mr-1"></i> Import
             </button>
-               <a href="{{ route('products.export') }}" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs export-button">
-            <i class="fa fa-download"></i> Export
-        </a>
-         </form>
+            <a href="{{ route('products.export') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm export-button">
+                <i class="fa fa-download mr-1"></i> Export
+            </a>
+        </form>
     </div>
 
     <!-- Date Filter Form -->
@@ -41,55 +44,49 @@
 
     <!-- Action Buttons -->
     <div class="flex justify-end gap-2 mb-4">
-        <a href="{{ route('products.create') }}"class= "bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm flex items-center gap-2 create-button">
+        <a href="{{ route('products.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm flex items-center gap-2 create-button">
             <i class="fa fa-plus"></i> New Product
         </a>
     </div>
 
     <!-- Product Table -->
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-600 border border-gray-800 rounded-lg">
-            <thead class="bg-gray-100">
+    <div class="overflow-hidden rounded-lg bg-gray-800">
+        <table class="w-full text-sm text-left text-gray-300">
+            <thead class="text-xs text-gray-400 uppercase bg-gray-700">
                 <tr>
-                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">No</th>
-                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Image</th>
-                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Name</th>
-                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Details</th>
-                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Type</th>
-                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Updated At</th>
-                    <th class="border px-4 py-2 text-center text-sm font-medium text-gray-700">Actions</th>
+                    <th class="px-6 py-3">No</th>
+                    <th class="px-6 py-3">Image</th>
+                    <th class="px-6 py-3">Name</th>
+                    <th class="px-6 py-3">Details</th>
+                    <th class="px-6 py-3">Type</th>
+                    <th class="px-6 py-3">Updated At</th>
+                    <th class="px-6 py-3 text-center">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
+            <tbody class="divide-y divide-gray-700">
                 @forelse ($products as $product)
-                    <tr>
-                        <td class="border px-4 py-2 text-sm text-gray-800">{{ ++$i }}</td>
-                        <td class="border px-4 py-2">
-                            <img src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" class="w-8 h-auto rounded cursor-pointer open-modal" data-img="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}"  />
+                    <tr class="hover:bg-gray-700">
+                        <td class="px-6 py-4">{{ ++$i }}</td>
+                        <td class="px-6 py-4">
+                            <img src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" class="w-10 h-auto rounded cursor-pointer open-modal" data-img="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}"  />
                         </td>
-                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->name }}</td>
-                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->detail }}</td>
-                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->type }}</td>
-                        <td class="border px-4 py-2 text-sm text-gray-800">{{ $product->updated_at->format('d M Y') }}</td>
-                        <td class="border px-4 py-2 flex gap-2 flex-wrap">
-                            <a href="{{ route('products.show', $product->id) }}" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs show-button" >
-                                <i class="fa-solid fa-list"></i> Show
-                            </a>
-                            <a href="{{ route('products.edit', $product->id) }}" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs edit-button" >
-                                <i class="fa-solid fa-pen-to-square"></i> Edit
-                            </a>
-                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="delete-form">
+                        <td class="px-6 py-4">{{ $product->name }}</td>
+                        <td class="px-6 py-4 truncate max-w-xs">{{ $product->detail }}</td>
+                        <td class="px-6 py-4">{{ $product->type }}</td>
+                        <td class="px-6 py-4">{{ $product->updated_at->format('d M Y') }}</td>
+                        <td class="px-6 py-4">
+                            <a href="{{ route('products.show', $product->id) }}" class="text-blue-400 hover:text-blue-300 mr-2 show-button">Show</a>
+                            <a href="{{ route('products.edit', $product->id) }}" class="text-blue-400 hover:text-blue-300 mr-2 edit-button">Edit</a>
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline-block delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs delete-button" data-name="{{ $product->name }}">
-                                    <i class="fa fa-trash"></i> Delete
-                                </button>
+                                <button type="submit" class="text-red-500 hover:text-red-400 delete-button" data-name="{{ $product->name }}">Delete</button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-4 text-center text-gray-500">No products found.</td>
+                        <td colspan="7" class="px-6 py-6 text-center text-gray-400">No products found.</td>
                     </tr>
                 @endforelse
             </tbody>

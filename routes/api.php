@@ -49,3 +49,19 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
     Route::post('/profile', [AuthController::class, 'profile'])->middleware('auth:api');
 });
+
+// == Global Virtual API Dynamic Route ==
+Route::prefix('api/virtual')->middleware('auth:api')->group(function () {
+    Route::get('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'index']);
+    Route::post('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'store']);
+    Route::get('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'show']);
+    Route::put('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'update']);
+    Route::delete('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'destroy']);
+});
+Route::middleware('auth:api')->prefix('api/virtual')->group(function () {
+    Route::get('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'index']);
+    Route::post('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'store']);
+    Route::get('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'show']);
+    Route::put('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'update']);
+    Route::delete('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'destroy']);
+});

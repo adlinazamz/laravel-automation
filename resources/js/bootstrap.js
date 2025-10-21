@@ -9,6 +9,13 @@ window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+// Ensure jQuery is available for legacy plugins that expect it globally.
+import $ from 'jquery';
+window.$ = window.jQuery = $;
+// Import bootstrap-datepicker (bundled via npm) so it attaches to the same jQuery instance
+import 'bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js';
+import 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css';
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

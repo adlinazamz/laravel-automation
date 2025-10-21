@@ -53,8 +53,7 @@ require __DIR__.'/auth.php';
 //Route::post('/run-automation',[AutomationController::class, 'runAutomation'])->name('run.automation');
 Route::get('/tables', [AutomationController::class, 'listTables'])->name('tables.list');
 Route::post('/run-virtual', [AutomationController::class, 'runAutomation']);
-
-
+//virtual
 Route::get('/tables', [AutoController::class, 'listTables'])->name('tables.list');
 Route::post('/run-auto',[AutoController::class, 'runAuto'])->name('run.auto');
 

@@ -33,8 +33,10 @@ class VirtualController extends Controller
     public function create($table)
 {
     $columns = VirCreator::getSchema($table);
+    // Use singular display name for headings (e.g. "Event") but keep
+    // modelNameLower as the table slug (e.g. "events") for routing.
     $modelName = Str::singular(ucfirst($table));
-    $modelNameLower = strtolower($modelName);
+    $modelNameLower = strtolower($table);
 
     $creator = new \App\Helpers\VirCreator();
     $formFields = $creator->generateFormFields($columns, 'create', $modelNameLower);
@@ -48,6 +50,8 @@ class VirtualController extends Controller
     public function store(Request $request, $table)
     {
         $data = $request->except(['_token', '_method']);
+        // Normalize date fields before storing
+        $data = \App\Helpers\VirCreator::normalizeDates($table, $data);
         $data['created_at'] = now();
         $data['updated_at'] = now();
         VirCreator::handle($table, 'store', null, $data);
@@ -58,8 +62,9 @@ class VirtualController extends Controller
 
     public function show($table,$id){
         $columns  = VirCreator::getSchema($table);
-        $modelName = ucfirst($table);
-        $modelNameLower = strtolower($modelName);
+        // Singular display name for show/edit headings; keep modelNameLower as table slug
+        $modelName = Str::singular(ucfirst($table));
+        $modelNameLower = strtolower($table);
         $row=VirCreator::handle($table, 'show', $id);
         $creator = new \App\Helpers\VirCreator();
         $showFields = $creator->generateShowFields($columns, $modelNameLower, $row);
@@ -74,8 +79,9 @@ class VirtualController extends Controller
     public function edit($table, $id)
 {
     $columns = VirCreator::getSchema($table);
-    $modelName = ucfirst($table);
-    $modelNameLower = strtolower($modelName);
+    // Use singular display name for form headings; modelNameLower stays as table slug
+    $modelName = Str::singular(ucfirst($table));
+    $modelNameLower = strtolower($table);
     $row = VirCreator::handle($table, 'show', $id);
 
     $creator = new \App\Helpers\VirCreator();
@@ -96,6 +102,7 @@ class VirtualController extends Controller
     public function update(Request $request, $table, $id)
     {
         $data = $request->except(['_token','_method']);
+        $data = \App\Helpers\VirCreator::normalizeDates($table, $data);
         $data['updated_at'] = now();
         VirCreator::handle($table, 'update',$id,$data);
 

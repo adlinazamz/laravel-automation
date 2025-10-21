@@ -1,91 +1,32 @@
 @extends('products.layout')
 @section('content')
 
-<div class="max-w-2xl mx-auto mt-10 bg-white shadow-md rounded-lg">
-  <h2 class="text-xl font-semibold bg-gray-100 px-6 py-4 rounded-t-lg">Edit Product</h2>
-  <div class="px-6 py-4">
+<section class="bg-transparent">
+  <div class="max-w-2xl px-4 py-6 mx-auto">
+      <h2 class="mb-4 text-xl font-bold text-white">Edit Product</h2>
+      <form action="{{ route('products.update',$product->id) }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          @method('PUT')
+          <div class="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
+              <div class="sm:col-span-2">
+                  <label for="name" class="block mb-2 text-sm font-medium text-white">Product Name</label>
+                  <input type="text" name="name" id="name" value="{{ old('name', $product->name) }}" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5" placeholder="Type product name" required>
+              </div>
+              <div class="w-full">
+                  <label for="type" class="block mb-2 text-sm font-medium text-white">Type</label>
+                  <input type="text" name="type" id="type" value="{{ old('type', $product->type) }}" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg block w-full p-2.5" placeholder="Product type">
+              </div>
+              <div class="sm:col-span-2">
+                  <label for="detail" class="block mb-2 text-sm font-medium text-white">Description</label>
+                  <textarea id="detail" name="detail" rows="6" class="block p-2.5 w-full text-sm text-white bg-gray-700 rounded-lg border border-gray-600" placeholder="Write a product description here...">{{ old('detail', $product->detail) }}</textarea>
+              </div>
+          </div>
 
-    <div class="flex justify-end mb-4">
-      <a href="{{ route('products.index') }}" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-2 rounded inline-flex items-center">
-        <i class="fa fa-arrow-left mr-1"></i> Back to Products
-      </a>
-    </div>
-
-    <form action="{{ route('products.update',$product->id) }}" method="POST" enctype="multipart/form-data">
-      @csrf
-      @method('PUT')
-
-      {{-- Name --}}
-      <div class="mb-4">
-        <label for="inputName" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
-        <input
-          type="text"
-          name="name"
-          id="inputName"
-          placeholder="Name"
-          value="{{$product -> name}}"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('name') border-red-500 @enderror"
-        >
-        @error('name')
-          <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-        @enderror
-      </div>
-
-      {{-- Details --}}
-      <div class="mb-4">
-        <label for="inputDetail" class="block text-sm font-medium text-gray-700 mb-1">Details:</label>
-        <textarea
-          name="detail"
-          id="inputDetail"
-          placeholder="Detail"
-          rows="5"
-          value="{{$product -> detail}}"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('detail') border-red-500 @enderror"
-        ></textarea>
-        @error('detail')
-          <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-        @enderror
-      </div>
-
-      {{-- Type --}}
-      <div class="mb-4">
-        <label for="inputType" class="block text-sm font-medium text-gray-700 mb-1">Type:</label>
-        <input
-          type="text"
-          name="type"
-          id="inputType"
-          placeholder="Type"
-          value="{{$product -> type}}"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('type') border-red-500 @enderror"
-        >
-        @error('type')
-          <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-        @enderror
-      </div>
-
-      {{-- Image --}}
-      <div class="mb-4">
-        <label for="inputImage" class="block text-sm font-medium text-gray-700 mb-1">Image:</label>
-        <input
-          type="file"
-          name="image"
-          id="inputImage"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('image') border-red-500 @enderror"
-        >
-        <img src = "{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" width  ="300px">
-        @error('image')
-          <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-        @enderror
-      </div>
-
-      {{-- Submit --}}
-      <div class="flex justify-end">
-        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded inline-flex items-center">
-          <i class="fa-solid fa-floppy-disk mr-1"></i> Update
-        </button>
-      </div>
-
-    </form>
+          <div class="flex items-center space-x-4">
+              <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5">Update</button>
+              <a href="{{ route('products.index') }}" class="text-gray-300 hover:text-white border border-gray-600 hover:bg-gray-700 font-medium rounded-lg text-sm px-5 py-2.5">Cancel</a>
+          </div>
+      </form>
   </div>
-</div>
+</section>
 @endsection

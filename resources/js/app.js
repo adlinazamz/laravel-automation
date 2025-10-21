@@ -244,3 +244,143 @@ document.addEventListener('DOMContentLoaded', function () {
 }
  
   });
+
+  // Image modal handler
+  document.querySelectorAll('.js-image-modal').forEach(function(img) {
+    img.addEventListener('click', function () {
+      var src = img.getAttribute('data-src') || img.src;
+      var modal = document.getElementById('image-modal');
+      var modalImg = document.getElementById('image-modal-img');
+      modalImg.src = src;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+  });
+
+  var imageModalClose = document.getElementById('image-modal-close');
+  if (imageModalClose) {
+    imageModalClose.addEventListener('click', function () {
+      var modal = document.getElementById('image-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      var modalImg = document.getElementById('image-modal-img');
+      modalImg.src = '';
+    });
+  }
+
+  // Close on ESC or click outside
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var modal = document.getElementById('image-modal');
+      if (modal && modal.classList.contains('flex')) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+        document.getElementById('image-modal-img').src = '';
+      }
+    }
+  });
+
+  var imageModal = document.getElementById('image-modal');
+  if (imageModal) {
+    imageModal.addEventListener('click', function (e) {
+      if (e.target === imageModal) {
+        imageModal.classList.remove('flex');
+        imageModal.classList.add('hidden');
+        document.getElementById('image-modal-img').src = '';
+      }
+    });
+  }
+
+  // Datepicker toggle and normalization
+  // Clicking the calendar icon should focus the input and open the datepicker (if available).
+  document.querySelectorAll('.js-datepicker-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function (e) {
+      var targetSelector = btn.getAttribute('data-target');
+      if (!targetSelector) return;
+      var input = document.querySelector(targetSelector);
+      if (!input) return;
+      input.focus();
+
+      // If bootstrap-datepicker is attached, show it programmatically
+      try {
+        if (typeof jQuery !== 'undefined' && typeof jQuery(input).datepicker === 'function') {
+          jQuery(input).datepicker('show');
+          return;
+        }
+      } catch (err) {
+        // ignore
+      }
+    });
+  });
+
+  // Normalize date input to DD-MM-YYYY on blur/change. Accept common formats.
+  document.querySelectorAll('input.datepicker').forEach(function(input) {
+    var normalize = function () {
+      var val = input.value && input.value.trim();
+      if (!val) return;
+
+      // Try parsing with moment if available, otherwise try simple heuristics
+      var formatted = null;
+      try {
+        if (typeof moment !== 'undefined') {
+          // allow many formats and prefer strict parsing
+          var m = moment(val, ['DD-MM-YYYY','D-M-YYYY','YYYY-MM-DD','DD/MM/YYYY','D/M/YYYY','MM-DD-YYYY','MM/DD/YYYY'], true);
+          if (!m.isValid()) {
+            // try non-strict fallback
+            m = moment(val);
+          }
+          if (m.isValid()) formatted = m.format('DD-MM-YYYY');
+        }
+      } catch (err) {
+        // fallback below
+      }
+
+      if (!formatted) {
+        // Basic regex-based fallback: detect yyyy-mm-dd or dd-mm-yyyy or dd/mm/yyyy
+        var ymd = val.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+        var dmy = val.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+        if (ymd) {
+          var y = ymd[1], m = ymd[2].padStart(2,'0'), d = ymd[3].padStart(2,'0');
+          formatted = d + '-' + m + '-' + y;
+        } else if (dmy) {
+          var d = dmy[1].padStart(2,'0'), m = dmy[2].padStart(2,'0'), y = dmy[3];
+          formatted = d + '-' + m + '-' + y;
+        }
+      }
+
+      if (formatted) input.value = formatted;
+    };
+
+    input.addEventListener('blur', normalize);
+    input.addEventListener('change', normalize);
+  });
+
+  // Theme toggle (light/dark) persisted in localStorage
+  (function() {
+    var themeToggle = document.getElementById('theme-toggle');
+    if (!themeToggle) return;
+
+    var lightIcon = document.getElementById('theme-toggle-light-icon');
+    var darkIcon = document.getElementById('theme-toggle-dark-icon');
+
+    function setTheme(dark) {
+      var html = document.documentElement;
+      if (dark) html.classList.add('dark'); else html.classList.remove('dark');
+      if (lightIcon && darkIcon) {
+        if (dark) { lightIcon.classList.remove('hidden'); darkIcon.classList.add('hidden'); }
+        else { lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); }
+      }
+    }
+
+    // initialize from localStorage or OS preference
+    var saved = localStorage.getItem('theme');
+    if (saved === 'dark') setTheme(true);
+    else if (saved === 'light') setTheme(false);
+    else setTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    themeToggle.addEventListener('click', function () {
+      var isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      setTheme(isDark);
+    });
+  })();
