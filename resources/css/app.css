@@ -63,3 +63,35 @@
   font-weight: 600;
   color: #111827 !important;    /* gray-900 */
 }
+
+/* Dark mode overrides */
+:root.dark .apexcharts-legend-text { color: #e5e7eb !important; } /* gray-200 */
+:root.dark .apexcharts-xaxis text,
+:root.dark .apexcharts-yaxis text { fill: #9ca3af !important; } /* gray-400 */
+:root.dark .apexcharts-title-text { color: #e5e7eb !important; }
+
+/* Tooltip styling for dark mode (when custom content inserted) */
+.custom-values-tooltip { background: #111827; color: #fff; }
+.dark .custom-values-tooltip { background: #111827; color: #fff; }
+
+/* Ensure donut center text and legend show in dark mode */
+.apexcharts-donut-label .apexcharts-donut-value, .apexcharts-datalabel-label { fill: #e5e7eb !important; color: #e5e7eb !important; }
+.apexcharts-legend .apexcharts-legend-series, .apexcharts-legend-text { color: #e5e7eb !important; }
+
+/* Force legend markers to be visible and slightly larger */
+.apexcharts-legend-marker polygon, .apexcharts-legend-marker circle { opacity: 1 !important; transform: scale(1.1); }
+
+/* Force fill for donut center text inside SVG elements (more specific) */
+svg .apexcharts-donut-label .apexcharts-donut-value, svg .apexcharts-donut-label .apexcharts-donut-text {
+  fill: #e5e7eb !important;
+  color: #e5e7eb !important;
+}
+
+/* Make sure legend text inside SVG is visible */
+svg .apexcharts-legend .apexcharts-legend-text, svg .apexcharts-legend-series {
+  fill: #e5e7eb !important;
+  color: #e5e7eb !important;
+}
+
+/* Allow tooltips to not block pointer events so they hide when cursor leaves */
+.apexcharts-tooltip { pointer-events: none !important; }

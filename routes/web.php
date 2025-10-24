@@ -66,3 +66,22 @@ Route::prefix('virtual')->middleware(['web'])->group(function () {
     Route::put('/{table}/{id}', [VirtualController::class, 'update'])->name('virtual.update');
     Route::delete('/{table}/{id}', [VirtualController::class, 'destroy'])->name('virtual.destroy');
 });
+
+//Event auto-generated route
+Route::get('/event', [App\Http\Controllers\EventController::class, 'index'])->name('event.index');
+Route::get('/event/create',[App\Http\Controllers\EventController::class, 'create'])->name('event.create');
+Route::post('/event', [App\Http\Controllers\EventController::class, 'store'])->name('event.store');
+Route::get('/event/{id}', [App\Http\Controllers\EventController::class, 'show'])->name('event.show');
+Route::get('/event/{id}/edit', [App\Http\Controllers\EventController::class, 'edit'])->name('event.edit');
+Route::put('/event/{id}', [App\Http\Controllers\EventController::class, 'update'])->name('event.update');
+Route::delete('/event/{id}', [App\Http\Controllers\EventController::class, 'destroy'])->name('event.destroy');
+
+Route::prefix('virtual')->middleware(['web'])->group(function () {
+    Route::get('/{table}', [VirtualController::class, 'index'])->name('virtual.index');
+    Route::get('/{table}/create', [VirtualController::class, 'create'])->name('virtual.create');
+    Route::post('/{table}', [VirtualController::class, 'store'])->name('virtual.store');
+    Route::get('/{table}/{id}', [VirtualController::class, 'show'])->name('virtual.show');
+    Route::get('/{table}/{id}/edit', [VirtualController::class, 'edit'])->name('virtual.edit');
+    Route::put('/{table}/{id}', [VirtualController::class, 'update'])->name('virtual.update');
+    Route::delete('/{table}/{id}', [VirtualController::class, 'destroy'])->name('virtual.destroy');
+});

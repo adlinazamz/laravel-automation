@@ -32,16 +32,27 @@ class ProductController extends Controller
             default => Carbon::today()->subdays(6),
         };
         
-        $productCreated = \App\Models\product::where('created_at', '>=', $fromDate)
+        // Group by ISO date (Y-m-d) first, then build an ordered series from $fromDate -> today
+        $createdRaw = \App\Models\Product::where('created_at', '>=', $fromDate)
             ->get()
-            ->groupBy(fn($p)=>$p->created_at->format('d M'))
-            ->map->count()
-            ->toArray();
-        $productUpdated = \App\Models\product::where('updated_at', '>=', $fromDate)
+            ->groupBy(fn($p) => $p->created_at->format('Y-m-d'))
+            ->map->count();
+
+        $updatedRaw = \App\Models\Product::where('updated_at', '>=', $fromDate)
             ->get()
-            ->groupBy(fn($p)=>$p->updated_at->format('d M'))
-            ->map->count()
-            ->toArray();
+            ->groupBy(fn($p) => $p->updated_at->format('Y-m-d'))
+            ->map->count();
+
+        $productCreated = [];
+        $productUpdated = [];
+
+        $start = Carbon::parse($fromDate)->startOfDay();
+        $end = Carbon::today()->startOfDay();
+        for ($date = $start; $date->lte($end); $date->addDay()) {
+            $key = $date->format('Y-m-d');
+            $productCreated[$key] = $createdRaw->get($key, 0);
+            $productUpdated[$key] = $updatedRaw->get($key, 0);
+        }
 
         return view('dashboard', ['products' => $products, 'typeCounts' => $typeCounts, 
         'newProducts' => $newProducts, 
@@ -53,16 +64,21 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $query = Product::query();
-        $dateFrom = $request->filled('date_from') ? Carbon::createFromFormat('d-m-Y', $request->input('date_from'))->format('Y-m-d') : null;
-        $dateTo = $request->filled('date_to') ? Carbon::createFromFormat('d-m-Y', $request->input('date_to'))->format('Y-m-d') : null;
+        $start = $request->input('start');
+        $end = $request->input('end');
+        $dateType = $request->input('date_type', 'updated_at'); // default
 
-        if ($dateFrom && $dateTo) {
-            $query->whereBetween('updated_at', [$dateFrom . ' 00:00:00', $dateTo . ' 23:59:59']);
-        } elseif ($dateFrom) {
-            $query->whereDate('updated_at', $dateFrom);
-        } elseif ($dateTo) {
-            $query->whereDate('updated_at', '<=', $dateTo);
-        }
+        if ($start && $end) {
+    $query->whereBetween($dateType, [
+        Carbon::parse($start)->startOfDay(),
+        Carbon::parse($end)->endOfDay()
+    ]);
+} elseif ($start) {
+    $query->where($dateType, '>=', Carbon::parse($start)->startOfDay());
+} elseif ($end) {
+    $query->where($dateType, '<=', Carbon::parse($end)->endOfDay());
+}
+
 
         $products = $query->latest()->paginate(10);
         return view('products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
@@ -83,7 +99,11 @@ class ProductController extends Controller
 
     public function create(): View
     {
-        return view('products.create');
+        $types = \App\Models\Product::select('type')
+                ->distinct()
+                ->whereNotNull('type')
+                ->pluck('type');
+        return view('products.create', compact ('types'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -108,8 +128,12 @@ class ProductController extends Controller
 
     
     public function edit(Product $product): View
-    {
-        return view('products.edit', compact('product'));
+    {   
+        $types = \App\Models\Product::select('type')
+                ->distinct()
+                ->whereNotNull('type')
+                ->pluck('type');
+        return view('products.edit', compact('product', 'types'));
     }
 
     public function update(Request $request, Product $product): RedirectResponse

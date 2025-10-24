@@ -1,40 +1,84 @@
 @extends('products.layout')
 @section('content')
 
-<div class="max-w-3xl mx-auto mt-8">
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <div class="px-6 py-4 border-b">
-            <h2 class="text-2xl font-semibold text-gray-800">Show Product</h2>
+<div class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-6 min-h-screen">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+
+      {{-- Header --}}
+      <div class="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Product Details</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Full information for <strong>{{ $product->name }}</strong></p>
         </div>
+        <a href="{{ route('products.index') }}"
+           class="inline-flex items-center text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 px-3 py-1.5 rounded-lg dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 transition">
+          <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Products
+        </a>
+      </div>
 
-        <div class="p-6 space-y-4">
-            <div class="flex justify-end">
-                <a href="{{ route('products.index') }}" class="inline-flex items-center px-3 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-sm text-gray-700">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
-                    Back to Products
-                </a>
-            </div>
+      {{-- Content --}}
+      <div class="p-6">
+        @if ($product)
+          @if ($product->image)
+            {{-- Two-column layout when image exists --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {{-- Image --}}
+              <div class="flex justify-center items-start">
+                <img 
+                  src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" 
+                  alt="{{ $product->name }}" 
+                  class="w-full max-w-sm rounded-xl shadow-md cursor-pointer js-image-modal"
+                  data-src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}">
+              </div>
 
-            @if ($product)
-            <div>
-                <div class="mb-2"><strong>Name:</strong> {{ $product->name }}</div>
-                <div class="mb-2"><strong>Details:</strong> {{ $product->detail }}</div>
-                <div class="mb-2"><strong>Type:</strong> {{ $product->type }}</div>
-                <div class="mb-2"><strong>Updated at:</strong> {{ $product->updated_at ? $product->updated_at->format('d M Y') : '-' }}</div>
-            </div>
-
-            <div>
-                <strong>Image:</strong>
-                <div class="mt-2">
-                    <img src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}" alt="{{ $product->name }}" class="cursor-pointer js-image-modal max-w-full h-auto rounded shadow" data-src="{{ Str::startsWith($product->image, '/storage/') ? $product->image : '/images/' . $product->image }}">
+              {{-- Details --}}
+              <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $product->name }}</h3>
                 </div>
+                <div>
+                  <span class="font-medium text-gray-600 dark:text-gray-400">Details:</span>
+                  <p class="mt-1 leading-relaxed">{{ $product->detail }}</p>
+                </div>
+                <div>
+                  <span class="font-medium text-gray-600 dark:text-gray-400">Type:</span>
+                  <p class="mt-1">{{ $product->type }}</p>
+                </div>
+                <div>
+                  <span class="font-medium text-gray-600 dark:text-gray-400">Last Updated:</span>
+                  <p class="mt-1">{{ $product->updated_at ? $product->updated_at->format('d M Y, h:i A') : '-' }}</p>
+                </div>
+              </div>
             </div>
+          @else
+            {{-- Single-column layout when no image --}}
+            <div class="text-gray-700 dark:text-gray-300 space-y-4">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $product->name }}</h3>
+              <div>
+                <span class="font-medium text-gray-600 dark:text-gray-400">Details:</span>
+                <p class="mt-1 leading-relaxed">{{ $product->detail }}</p>
+              </div>
+              <div>
+                <span class="font-medium text-gray-600 dark:text-gray-400">Type:</span>
+                <p class="mt-1">{{ $product->type }}</p>
+              </div>
+              <div>
+                <span class="font-medium text-gray-600 dark:text-gray-400">Last Updated:</span>
+                <p class="mt-1">{{ $product->updated_at ? $product->updated_at->format('d M Y, h:i A') : '-' }}</p>
+              </div>
+            </div>
+          @endif
+        @else
+          <p class="text-center text-gray-400">No product found.</p>
+        @endif
+      </div>
 
-            @else
-            <p>No product found.</p>
-            @endif
-
-        </div>
     </div>
+  </div>
 </div>
+
 @endsection

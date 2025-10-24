@@ -15,31 +15,36 @@ document.addEventListener('DOMContentLoaded', function () {
             type: 'donut',
             height: 360,
             fontFamily: "Inter, sans-serif",
-            events:{dataPointSeelection: function(event, chartContext, config){
-              const selectedlabel=chartContext.w.globals.labels[config.dataPointIndex]; 
-              const selectedValue = chartContext.w.globals.series[config.dataPointIndex];
-              chartContext.updateoptions({
-                plotOption:{
-                  pie:{
-                    donut:{
-                      labels:{
-                        total:{
-                          label:selectedlabel,
-                          formatter: function(){
-                            return selectedValue + " items";
+            events: {
+              // ApexCharts event name is dataPointSelection (fix typo)
+              dataPointSelection: function(event, chartContext, config){
+                try {
+                  const selectedLabel = chartContext.w.globals.labels[config.dataPointIndex];
+                  const selectedValue = chartContext.w.globals.series[config.dataPointIndex];
+                  chartContext.updateOptions({
+                    plotOptions: {
+                      pie: {
+                        donut: {
+                          labels: {
+                            total: {
+                              label: selectedLabel,
+                              formatter: function(){
+                                return selectedValue + " items";
+                              }
+                            }
                           }
                         }
                       }
                     }
-                  }
+                  });
+                } catch (err) {
+                  // defensive: ignore update failures
                 }
-              });
+              }
             }
-          }
         },
         stroke:{
-          colors: ["transparent"],
-          linecap: "",  
+          colors: ["transparent"]
         },
         plotOptions:{
           pie:{
@@ -50,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   show:true,
                   fontFamily:"Inter, sans-serif",
                   offsetY:20,
-                  color: "#ffff",
+                  color: "#e5e7eb",
                 }, 
                 total:{
                   showAlways:true,
@@ -66,8 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 value:{
                   show:true,
-                  fontfamily: "Inter, sans-serif",
-                  offsetY :-20,
+                  color: "#e5e7eb",
+                  fontFamily: "Inter, sans-serif",
+                  offsetY: -20,
                   formatter: function(value){
                     return value +" items";
                   },
@@ -83,13 +89,13 @@ document.addEventListener('DOMContentLoaded', function () {
         },
       },
 
-        series: productTypeData,
-        labels: productTypeLabels,
-        colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-        legend: { position: 'bottom' },
+  series: productTypeData,
+  labels: productTypeLabels,
+  colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694", '#d8b4fe'],
+  legend: { position: 'bottom', labels: { colors: ['#e5e7eb'], useSeriesColors: false } },
         tooltip: {
             enabled: true,
-            custom: function({ series, seriesIndex, w }) {
+        custom: function({ series, seriesIndex, w }) {
                 const val = series[seriesIndex];
                 const label = w.config.labels[seriesIndex];
                 const total = series.reduce((a, b) => a + b, 0);
@@ -117,8 +123,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }]
     };
 
-    window.donutChart = new ApexCharts(document.getElementById("donut-chart"), donutOptions);
-    window.donutChart.render();
+    // Guard: don't recreate the chart if already present (hot-reload/turbo-safe)
+    if (!window.donutChart) {
+      window.donutChart = new ApexCharts(document.getElementById("donut-chart"), donutOptions);
+      window.donutChart.render();
+    }
 
     const donutDownloadBtn = document.querySelector('[data-tooltip-target="data-tooltip"]');
     if (donutDownloadBtn) {
@@ -144,104 +153,112 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 }
 
+// Export full report button - make sure it sends the chart image and selected range
+const exportBtn = document.getElementById('exportReportButton');
+if (exportBtn) {
+  exportBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    exportBtn.textContent = 'Generating...';
+    exportBtn.classList.add('opacity-50');
+    exportBtn.disabled = true;
+    try {
+      // Wait for chart to be available
+      if (!window.apexChart) throw new Error('Line chart not ready');
+      const data = await window.apexChart.dataURI({ type: 'png', quality: 1 });
+      const form = new FormData();
+      form.append('range', exportBtn.dataset.range || '7');
+      form.append('chart', data.imgURI);
+      const token = document.querySelector('meta[name="csrf-token"]').content;
+  const response = await fetch('/reports/export/full', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': token },
+        body: form
+      });
+      if (!response.ok) throw new Error(await response.text());
+      const blob = await response.blob();
+      const filename = `full-report-${exportBtn.dataset.range || '7'}-${new Date().toISOString().slice(0,10)}.pdf`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a);
+      a.click(); a.remove(); URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Export failed: ' + err.message);
+    } finally {
+      exportBtn.textContent = 'View Full Report';
+      exportBtn.classList.remove('opacity-50');
+      exportBtn.disabled = false;
+    }
+  });
+}
+
   if (document.getElementById("line-chart")) {
     const lineOptions = {
-        chart: {
-            type: "line",
-            height: 350,
-            fontFamily: "Inter, sans-serif",
-            toolbar: { show: false },
-            zoom: { enabled: true },
-            animations: {
-                enabled: true,
-                easing: 'easeinout',
-                speed: 800,
-            },
+      chart: {
+        type: 'line',
+        height: 350,
+        fontFamily: 'Inter, sans-serif',
+        toolbar: { show: false },
+        zoom: { enabled: true },
+        animations: { enabled: true, easing: 'easeinout', speed: 800 }
+      },
+      stroke: { curve: 'smooth', width: 6 },
+      series: [
+        { name: 'Updated', data: Array.isArray(productUpdated) ? productUpdated : [], color: '#1A56DB' },
+        { name: 'Created', data: Array.isArray(productCreated) ? productCreated : [], color: '#7E3AF2' }
+      ],
+      xaxis: {
+        // Use formatted labels for display but keep raw ISO dates available for tooltip mapping
+        categories: (Array.isArray(productDates) && productDates.length) ? productDates : (Array.isArray(productDatesRaw) ? productDatesRaw : []),
+        categoriesRaw: Array.isArray(productDatesRaw) ? productDatesRaw : [],
+        labels: { style: { fontFamily: 'Inter, sans-serif', cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400' }, formatter: function(val) {
+            // try to show short date like '23 Oct' if ISO date provided
+            try {
+              var d = new Date(val);
+              if (!isNaN(d)) {
+                return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+              }
+            } catch (err) {}
+            return val;
+          }
         },
-        stroke: {
-            curve: "smooth",
-            width: 3
-        },
-        series: [
-            { name: "Updated", data: productUpdated, color: "#3b82f6" }, // blue
-            { name: "Created", data: productCreated, color: "#10b981" }  // green
-        ],
-        xaxis: {
-    show: false,
-    categories: productDates,
-    labels: {
-        style: {
-            fontFamily: "Inter, sans-serif",
-            cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400"
-        }
-    },
-    axisBorder: { show: true },
-    axisTicks: { show: true },
-    tooltip: { enabled: true },
-    crosshairs: {
-        show: true,
-        stroke: {
-            color: '#94a3b8', // slate-400
-            width: 1,
-            dashArray: 4
-        }
-    }
-},
-        yaxis: {
-            show: false,
-            labels: {
-                style: {
-                    fontFamily: "Inter, sans-serif",
-                    cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400"
-                }
-            },
-            tooltip: {
-                enabled: true
-            }
-        },
-        grid: {
-            strokeDashArray: 4,
-            padding: { left: 2, right: 2, top: -26 }
-        },
-        dataLabels: { enabled: false },
-        legend: { show: false },
-        tooltip: {
-            shared: true,
-            intersect: false,
-            theme: "dark",
-            custom: function ({ series, dataPointIndex, w }) {
-                if (dataPointIndex < 0) return "";
+        axisBorder: { show: false },
+        axisTicks: { show: false }
+      },
+      yaxis: { show: false },
+      grid: { strokeDashArray: 4, padding: { left: 2, right: 2, top: -26 } },
+      dataLabels: { enabled: false },
+      legend: { show: false },
+      tooltip: { shared: true, intersect: false, theme: 'dark', x: { show: true } ,
+        custom: function ({ series, dataPointIndex, w }) {
+          if (typeof dataPointIndex !== 'number' || dataPointIndex < 0) return '';
+          // First try Apex runtime categoryLabels, then prefer our productDatesRaw fallback, finally the displayed categories
+          var dateRaw = '';
+          if (w && w.globals && Array.isArray(w.globals.categoryLabels) && w.globals.categoryLabels[dataPointIndex]) {
+            dateRaw = w.globals.categoryLabels[dataPointIndex];
+          } else if (typeof productDatesRaw !== 'undefined' && Array.isArray(productDatesRaw) && productDatesRaw[dataPointIndex]) {
+            dateRaw = productDatesRaw[dataPointIndex];
+          } else if (w && w.config && w.config.xaxis && Array.isArray(w.config.xaxis.categories) && w.config.xaxis.categories[dataPointIndex]) {
+            dateRaw = w.config.xaxis.categories[dataPointIndex];
+          }
+          var dateLabel = dateRaw;
+          try {
+            var d = new Date(dateRaw);
+            if (!isNaN(d)) dateLabel = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+          } catch (err) {}
 
-                const date = w.globals.categoryLabels[dataPointIndex];
-                const rows = w.config.series.map((s, i) => {
-                    const val = series[i][dataPointIndex] ?? 0;
-                    const color = s.color || w.config.colors[i] || "#fff";
-                    return `
-                        <div style="display:flex;align-items:center;margin:4px 0;">
-                            <span style="display:inline-block;width:10px;height:10px;background:${color};border-radius:50%;margin-right:6px;"></span>
-                            <span style="font-weight:500;">${s.name}: <strong style="font-weight:700;">${val}</strong></span>
-                        </div>
-                    `;
-                }).join("");
-
-                return `
-                    <div class="custom-values-tooltip" style="background:#1f2937;color:#fff;padding:8px 12px;border-radius:6px;">
-                        <div style="margin-bottom:6px;font-size:12px;font-weight:600;">
-                            ${date}
-                        </div>
-                        ${rows}
-                    </div>
-                `;
-            }
+          const rows = (w && w.config && Array.isArray(w.config.series) ? w.config.series : []).map((s, i) => {
+            const val = (series && Array.isArray(series[i]) && series[i][dataPointIndex] !== undefined) ? series[i][dataPointIndex] : 0;
+            const color = (s && (s.color || (w.config && w.config.colors && w.config.colors[i]))) || '#fff';
+            return `<div style="display:flex;align-items:center;margin:4px 0;"><span style="display:inline-block;width:10px;height:10px;background:${color};border-radius:50%;margin-right:6px;"></span><span style="font-weight:500;">${s.name}: <strong style="font-weight:700;">${val}</strong></span></div>`;
+          }).join('');
+          return `<div class="custom-values-tooltip" style="background:#1f2937;color:#fff;padding:8px 12px;border-radius:6px;"><div style="margin-bottom:6px;font-size:12px;font-weight:600;">${dateLabel}</div>${rows}</div>`;
         }
+      }
     };
 
-    window.apexChart = new ApexCharts(document.getElementById("line-chart"), lineOptions);
+    window.apexChart = new ApexCharts(document.getElementById('line-chart'), lineOptions);
     window.apexChart.render();
-
-    // Line chart export to PDF
-    
-}
+  }
  
   });
 
@@ -293,7 +310,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Datepicker toggle and normalization
   // Clicking the calendar icon should focus the input and open the datepicker (if available).
-  document.querySelectorAll('.js-datepicker-toggle').forEach(function(btn) {
+  // Support both legacy and new toggle classes so virtual/templated markup works
+  document.querySelectorAll('.js-datepicker-toggle, .datepicker-toggle').forEach(function(btn) {
     btn.addEventListener('click', function (e) {
       var targetSelector = btn.getAttribute('data-target');
       if (!targetSelector) return;
@@ -314,46 +332,90 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Normalize date input to DD-MM-YYYY on blur/change. Accept common formats.
-  document.querySelectorAll('input.datepicker').forEach(function(input) {
-    var normalize = function () {
-      var val = input.value && input.value.trim();
-      if (!val) return;
+  // Central normalize function that converts many common inputs into ISO (YYYY-MM-DD).
+  function normalizeDateInput(input) {
+    if (!input) return;
+    var val = (input.value || '').trim();
+    if (!val) return;
 
-      // Try parsing with moment if available, otherwise try simple heuristics
-      var formatted = null;
+    var iso = null;
+    try {
+      // If flatpickr instance exists, try parsing with a few common format tokens
+      if (input._flatpickr && typeof flatpickr !== 'undefined') {
+        var tryFormats = ['Y-m-d','d-m-Y','d/m/Y','m-d-Y','m/d/Y','d.m.Y'];
+        for (var i = 0; i < tryFormats.length; i++) {
+          try {
+            var dt = flatpickr.parseDate(val, tryFormats[i]);
+            if (dt instanceof Date && !isNaN(dt)) {
+              var yyyy = dt.getFullYear();
+              var mm = String(dt.getMonth() + 1).padStart(2, '0');
+              var dd = String(dt.getDate()).padStart(2, '0');
+              iso = yyyy + '-' + mm + '-' + dd;
+              break;
+            }
+          } catch (e) { /* ignore parse errors */ }
+        }
+      }
+
+      // Try moment.js if available (many projects include it)
+      if (!iso && typeof moment !== 'undefined') {
+        var m = moment(val, ['DD-MM-YYYY','D-M-YYYY','YYYY-MM-DD','DD/MM/YYYY','D/M/YYYY','MM-DD-YYYY','MM/DD/YYYY'], true);
+        if (!m.isValid()) m = moment(val);
+        if (m.isValid()) iso = m.format('YYYY-MM-DD');
+      }
+    } catch (err) {
+      // continue to regex fallbacks
+    }
+
+    // Regex fallbacks
+    if (!iso) {
+  var ymd = val.match(/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})$/);
+      var dmy = val.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})$/);
+      if (ymd) {
+        var y = ymd[1], m = ymd[2].padStart(2, '0'), d = ymd[3].padStart(2, '0');
+        iso = y + '-' + m + '-' + d;
+      } else if (dmy) {
+        var d = dmy[1].padStart(2, '0'), m = dmy[2].padStart(2, '0'), y = dmy[3];
+        iso = y + '-' + m + '-' + d;
+      }
+    }
+
+    if (iso) {
+      // Prefer to set via flatpickr instance so UI stays in sync
       try {
-        if (typeof moment !== 'undefined') {
-          // allow many formats and prefer strict parsing
-          var m = moment(val, ['DD-MM-YYYY','D-M-YYYY','YYYY-MM-DD','DD/MM/YYYY','D/M/YYYY','MM-DD-YYYY','MM/DD/YYYY'], true);
-          if (!m.isValid()) {
-            // try non-strict fallback
-            m = moment(val);
-          }
-          if (m.isValid()) formatted = m.format('DD-MM-YYYY');
+        if (input._flatpickr && typeof input._flatpickr.setDate === 'function') {
+          input._flatpickr.setDate(iso, true, 'Y-m-d');
+        } else {
+          input.value = iso;
         }
-      } catch (err) {
-        // fallback below
+      } catch (e) {
+        input.value = iso;
       }
+    }
+  }
 
-      if (!formatted) {
-        // Basic regex-based fallback: detect yyyy-mm-dd or dd-mm-yyyy or dd/mm/yyyy
-        var ymd = val.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
-        var dmy = val.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-        if (ymd) {
-          var y = ymd[1], m = ymd[2].padStart(2,'0'), d = ymd[3].padStart(2,'0');
-          formatted = d + '-' + m + '-' + y;
-        } else if (dmy) {
-          var d = dmy[1].padStart(2,'0'), m = dmy[2].padStart(2,'0'), y = dmy[3];
-          formatted = d + '-' + m + '-' + y;
-        }
-      }
+  // Attach listeners to existing and future datepicker inputs
+  function attachDatepickerListeners(root) {
+    root = root || document;
+    root.querySelectorAll && root.querySelectorAll('input.datepicker').forEach(function(input) {
+      // avoid attaching multiple times
+      if (input.dataset._dateNormAttached === 'true') return;
+      input.dataset._dateNormAttached = 'true';
+      input.addEventListener('blur', function () { normalizeDateInput(input); });
+      input.addEventListener('change', function () { normalizeDateInput(input); });
+    });
+  }
 
-      if (formatted) input.value = formatted;
-    };
+  attachDatepickerListeners(document);
 
-    input.addEventListener('blur', normalize);
-    input.addEventListener('change', normalize);
-  });
+  // Also normalize before any form submit so virtual forms are handled
+  document.addEventListener('submit', function (e) {
+    try {
+      e.target.querySelectorAll && e.target.querySelectorAll('input.datepicker').forEach(function(input) {
+        normalizeDateInput(input);
+      });
+    } catch (err) { /* ignore */ }
+  }, true);
 
   // Theme toggle (light/dark) persisted in localStorage
   (function() {

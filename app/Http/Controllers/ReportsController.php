@@ -12,7 +12,8 @@ class ReportsController extends Controller
         $range=$request->input('range','7');
         $chart =$request-> input('chart');
         $export = new FullReportExport($range, $chart);
-        $pdf = Pdf::loadView('exports.full_report', $export->data());
-        return $pdf->download("full-report-{$range}.pdf");
+    // Use the PDF facade correctly (imported as PDF)
+    $pdf = PDF::loadView('exports.full_report', $export->data());
+    return $pdf->download("full-report-{$range}.pdf");
     }
 }

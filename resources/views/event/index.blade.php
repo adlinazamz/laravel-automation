@@ -1,4 +1,4 @@
-@extends('{{modelNameLower}}.layout')
+@extends('event.layout')
 @section('content')
 
 @if (session('success'))
@@ -14,16 +14,16 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
             <div>
                 <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
-                    {{modelName}}
+                    Events
                 </h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Browse a list of {{modelNameLower}}
+                    Browse a list of event
                 </p>
             </div>
 
-            <a href="{{ route('{{modelNameLower}}.create') }}"
+            <a href="{{ route('event.create') }}"
                 class="inline-flex items-center mt-3 md:mt-0 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-                <i class="fa fa-plus mr-2"></i> New {{modelName}}
+                <i class="fa fa-plus mr-2"></i> New Events
             </a>
         </div>
 
@@ -33,21 +33,43 @@
                 <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                     <tr>
                         <th class="px-4 py-3">No</th>
-                        {{tableHeaders}}
+                        <th class ="border px-4 py-2 text-center text-sm font-medium text-gray-700">Name</th>
+<th class ="border px-4 py-2 text-center text-sm font-medium text-gray-700">Description</th>
+<th class ="border px-4 py-2 text-center text-sm font-medium text-gray-700">Date_start</th>
+<th class ="border px-4 py-2 text-center text-sm font-medium text-gray-700">Date_end</th>
+<th class ="border px-4 py-2 text-center text-sm font-medium text-gray-700">Created_at</th>
+<th class ="border px-4 py-2 text-center text-sm font-medium text-gray-700">Updated_at</th>
                         <th class="px-6 py-3 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse (${{modelNameLower}} as $i => ${{modelNameLower}})
+                    @forelse ($event as $i => $event)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                             <td class="px-6 py-4 font-medium">{{ ++$i }}</td>
-                            {{tableRows}}
+                            <td class="border px-4 py-2 text-sm text-gray-800">
+            {{ $event->name }}
+             </td>
+<td class="border px-4 py-2 text-sm text-gray-800">
+            {{ $event->description }}
+             </td>
+<td class="border px-4 py-2 text-sm text-gray-800">
+            {{ $event->date_start }}
+             </td>
+<td class="border px-4 py-2 text-sm text-gray-800">
+            {{ $event->date_end }}
+             </td>
+<td class="border px-4 py-2 text-sm text-gray-800">
+            {{ $event->created_at }}
+             </td>
+<td class="border px-4 py-2 text-sm text-gray-800">
+            {{ $event->updated_at }}
+             </td>
                             <td class="px-6 py-4 text-right relative">
 
                                 {{-- Dropdown Button --}}
                                 <button type="button"
-                                    id="dropdownMenuButton{{ ${{modelNameLower}}->id }}"
-                                    data-dropdown-toggle="dropdownMenu{{ ${{modelNameLower}}->id }}"
+                                    id="dropdownMenuButton{{ $event->id }}"
+                                    data-dropdown-toggle="dropdownMenu{{ $event->id }}"
                                     class="p-2 text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-300 transition">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 4 15">
                                         <path d="M3.5 1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0Zm0 6.041a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0Zm0 5.959a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0Z" />
@@ -55,30 +77,30 @@
                                 </button>
 
                                 {{-- Dropdown Menu --}}
-                                <div id="dropdownMenu{{ ${{modelNameLower}}->id }}"
+                                <div id="dropdownMenu{{ $event->id }}"
                                     class="hidden absolute right-0 top-full mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-700 dark:divide-gray-600 text-center z-[9999]">
                                     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                                         <li>
-                                            <a href="{{ route('{{modelNameLower}}.show', ${{modelNameLower}}->id) }}"
+                                            <a href="{{ route('event.show', $event->id) }}"
                                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 Show
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('{{modelNameLower}}.edit', ${{modelNameLower}}->id) }}"
+                                            <a href="{{ route('event.edit', $event->id) }}"
                                                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 Edit
                                             </a>
                                         </li>
                                     </ul>
                                     <div class="py-1 text-red-600">
-                                        <form action="{{ route('{{modelNameLower}}.destroy', ${{modelNameLower}}->id) }}"
+                                        <form action="{{ route('event.destroy', $event->id) }}"
                                             method="POST" class="delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
                                                 class="w-full px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white delete-button"
-                                                data-name="{{ ${{modelNameLower}}->name }}">
+                                                data-name="{{ $event->name }}">
                                                 Delete
                                             </button>
                                         </form>
@@ -108,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.delete-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = form.querySelector('.delete-button').dataset.name || 'this {{modelNameLower}}';
+            const name = form.querySelector('.delete-button').dataset.name || 'this event';
             swal({
                 title: `Delete ${name}?`,
                 text: "This action cannot be undone.",

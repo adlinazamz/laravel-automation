@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+\Log::info('⚙️ FileCreator actually loaded from: ' . __FILE__);
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
@@ -79,47 +80,92 @@ class FileCreator{
         return ['swaggerRequired' =>implode(', ', $required),
                 'swaggerProperties'=> implode (', ', $properties)];
     }
-    public function generateFormFields($columns, $mode = 'create', $modelNameLower = ''){
-        $fields=[];
-        foreach ($columns as $col){
-            $name=$col->Field;
-            $type=$col->Type;
-            $nullable=$col->Null==='YES';
-            if (in_array($name, ['id', 'created_at', 'updated_at'])){
+    public function generateFormFields($columns, $mode = 'create', $modelNameLower = '')
+{
+    $fields = [];
+
+        foreach ($columns as $col) {
+            $name = $col->Field;
+            $type = $col->Type;
+            $nullable = $col->Null === 'YES';
+
+            // Skip default timestamp/id columns
+            if (in_array($name, ['id', 'created_at', 'updated_at'])) {
                 continue;
             }
-            $inputType= 'text';
-            if (Str::startsWith($type, 'int')){
-                $inputType ='number';
-            }
-            elseif(Str::startsWith($type,'date')){
-                $inputType ='date';
-            }
-             $valueAttr = '';
-            if ($mode === 'edit') {
-                $valueAttr = "value=\"{{ \${$modelNameLower}->{$name} }}\"";
+
+            // Determine input type
+            $inputType = 'text';
+            $isDate = false;
+            if (Str::startsWith($type, 'int')) {
+                $inputType = 'number';
+            } elseif (Str::startsWith($type, 'date') || Str::contains($type, 'datetime') || Str::contains($type, 'timestamp')) {
+                $isDate = true;
             }
 
-             $fields[] = <<<HTML
-<div class="mb-4">
-  <label for="input{$name}" class="block text-sm font-medium text-gray-700 mb-1">{$name}:</label>
-  <input
-    type="{$inputType}"
-    name="{$name}"
-    id="input{$name}"
-    placeholder="{$name}"
-    {$valueAttr}
-    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 @error('{$name}') border-red-500 @enderror"
-  >
-  @error('{$name}')
-    <p class="text-sm text-red-600 mt-1">{{ \$message }}</p>
-  @enderror
-</div>
-HTML;
-    }
+            // Handle edit mode (pre-fill value)
+            $valueAttr = '';
+            if ($mode === 'edit') {
+                $valueAttr = "value=\"{{ \${$modelNameLower}->${name} }}\"";
+            }
+
+            // Add unified Tailwind styling for both light & dark mode
+            if ($isDate) {
+                // Render a flatpickr-compatible text input with toggle button to keep legacy UI consistent
+                $fields[] = <<<HTML
+        <div class="mb-4">
+            <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}:</label>
+            <div class="relative">
+                <input
+                    type="text"
+                    name="{$name}"
+                    id="{$name}"
+                    placeholder="dd/mm/yyyy"
+                    {$valueAttr}
+                    class="datepicker w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 pr-10 
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 
+                               @error('{$name}') border-red-500 @enderror"
+                    autocomplete="off"
+                    data-fp-init="false"
+                    data-alt-format="d/m/Y"
+                >
+                <button type="button" class="datepicker-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300" data-target="#{$name}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z"/>
+                    </svg>
+                </button>
+            </div>
+            @error('{$name}')
+                <p class="text-sm text-red-600 mt-1">{{ \$message }}</p>
+            @enderror
+        </div>
+        HTML;
+            } else {
+                $fields[] = <<<HTML
+        <div class="mb-4">
+            <label for="input{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$name}:</label>
+            <input
+                type="{$inputType}"
+                name="{$name}"
+                id="input{$name}"
+                placeholder="{$name}"
+                {$valueAttr}
+                class="w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 
+                       border border-gray-300 dark:border-gray-600 rounded px-3 py-2 
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 
+                       @error('{$name}') border-red-500 @enderror"
+            >
+            @error('{$name}')
+                <p class="text-sm text-red-600 mt-1">{{ \$message }}</p>
+            @enderror
+        </div>
+        HTML;
+            }
+        }
 
     return implode("\n", $fields);
 }
+
 
     public function generateTableHeaders($columns){
         $headers=[];
@@ -236,18 +282,52 @@ if ($view === 'edit') {
             $this->saveFile("resources/views/{$modelNameLower}/{$view}.blade.php", $viewContent);
         }
     }
-    public function createWebRoute(){
-        $stub=$this->getStub('WebRoute.stub'); 
-        $modelName = $this->name;
-        $modelNameLower = strtolower($modelName);
-        $modelNamePluralLower = strtolower(Str::plural($modelName));
-        $webRouteContent = str_replace(
-            ['{{modelName}}', '{{modelNameLower}}', '{{modelNamePluralLower}}'],
-            [$modelName, $modelNameLower, $modelNamePluralLower],
-            $stub
-        );
-        $this->appendToFile("routes/web.php", $webRouteContent);
+    public function createWebRoute()
+{
+    $stub = $this->getStub('WebRoute.stub'); 
+    $modelName = $this->name;
+    $modelNameLower = strtolower($modelName);
+    $modelNamePluralLower = strtolower(Str::plural($modelName));
+
+    $webRouteContent = str_replace(
+        ['{{modelName}}', '{{modelNameLower}}', '{{modelNamePluralLower}}'],
+        [$modelName, $modelNameLower, $modelNamePluralLower],
+        $stub
+    );
+
+    $routesPath = base_path('routes/web.php');
+
+    try {
+        $existing = file_exists($routesPath) ? file_get_contents($routesPath) : '';
+
+        // Only skip if this exact route already exists
+        if (strpos($existing, "Route::resource('{$modelNameLower}'") !== false) {
+            \Log::info("⚠️ Route for {$modelNameLower} already exists. Skipping append.");
+            return;
+        }
+
+        $this->appendToFile('routes/web.php', $webRouteContent);
+        \Log::info("✅ Route appended for {$modelNameLower}");
+
+    } catch (\Throwable $e) {
+        \Log::error("❌ Failed to append route for {$modelNameLower}: " . $e->getMessage());
     }
+}
+
+protected function appendToFile($path, $content)
+{
+    $fullPath = base_path($path);
+
+    // Ensure newline before appending
+    $existing = file_exists($fullPath) ? file_get_contents($fullPath) : '';
+    if (!str_ends_with(trim($existing), PHP_EOL)) {
+        $existing .= PHP_EOL;
+    }
+
+    $finalContent = $existing . PHP_EOL . trim($content) . PHP_EOL;
+    File::put($fullPath, $finalContent);
+}
+
     public function createApiRoute(){
         $stub=$this->getStub('ApiRoute.stub'); 
         $modelName = $this->name;
@@ -290,8 +370,5 @@ if ($view === 'edit') {
     protected function saveFile($path, $content){
         File::ensureDirectoryExists(dirname(base_path($path)));
         File::put(base_path($path), $content);
-    }
-    protected function appendToFile($path, $content){
-        File::append(base_path($path), "\n". $content);
     }
 }

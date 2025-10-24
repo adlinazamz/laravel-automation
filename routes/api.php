@@ -58,10 +58,14 @@ Route::prefix('api/virtual')->middleware('auth:api')->group(function () {
     Route::put('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'update']);
     Route::delete('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'destroy']);
 });
-Route::middleware('auth:api')->prefix('api/virtual')->group(function () {
-    Route::get('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'index']);
-    Route::post('/{table}', [App\Http\Controllers\Api\VirtualApiController::class, 'store']);
-    Route::get('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'show']);
-    Route::put('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'update']);
-    Route::delete('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'destroy']);
+
+Route::middleware('auth:api')->group(function () {
+
+//Event auto-generated api route
+Route::get('/event', [App\Http\Controllers\Api\EventApiController::class, 'index'])->name('api.event.index');
+Route::post('/event', [App\Http\Controllers\Api\EventApiController::class, 'store'])->name('api.event.store');
+Route::get('/event/{event}', [App\Http\Controllers\Api\EventApiController::class, 'show'])->name('api.event.show');
+Route::put('/event/{event}', [App\Http\Controllers\Api\EventApiController::class, 'update'])->name('api.event.update');
+Route::post('/event/{event}', [App\Http\Controllers\Api\EventApiController::class, 'updateViaPost'])->name('api.event.updateViaPost');
+Route::delete('/event/{event}', [App\Http\Controllers\Api\EventApiController::class, 'destroy'])->name('api.event.destroy');
 });

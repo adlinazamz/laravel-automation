@@ -1,96 +1,184 @@
 @extends('virtual::layout')
 @section('content')
 
-<div class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
-        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            {{$modelName}}
-            <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Browse a list of {{$modelName}}</p>
-        </caption>    
-        <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                    <a href="{{ route('virtual.create', ['table' => $modelNameLower]) }}" class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" /></svg>
-                        New {{ $modelName }}
-                    </a>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
-                <div class="overflow-hidden rounded-lg bg-gray-800">
-                    <table class="w-full text-sm text-left text-gray-300">
-                        <thead class="text-xs text-gray-400 uppercase bg-gray-700">
-                            <tr>
-                                {{-- Ensure ID column is first --}}
-                                <th scope="col" class="px-6 py-3">ID</th>
-                                {{-- Render each field as its own column (exclude id to avoid duplication) --}}
-                                @foreach($fields as $f)
-                                    @if(strtolower($f) !== 'id')
-                                        <th scope="col" class="px-6 py-3">{{ ucfirst($f) }}</th>
-                                    @endif
-                                @endforeach
-                                <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700">
-                            @forelse ($rows as $i => $row)
-                                <tr class="bg-transparent hover:bg-gray-700">
-                                    <td class="px-6 py-4 font-medium">{{ $row->id ?? ('#' . ($i+1)) }}</td>
-                                    @foreach($fields as $f)
-                                        @if(strtolower($f) !== 'id')
-                                            <td class="px-6 py-4 truncate max-w-xs">{{ $row->$f }}</td>
-                                        @endif
-                                    @endforeach
-                                    <td class="px-6 py-4 text-right space-x-3">
-                                        <a href="{{ route('virtual.show', ['table'=>$modelNameLower,'id'=>$row->id]) }}" class="text-blue-400 hover:text-blue-300">Show</a>
-                                        <a href="{{ route('virtual.edit', ['table'=>$modelNameLower,'id'=>$row->id]) }}" class="text-blue-400 hover:text-blue-300">Edit</a>
-                                        <form action="{{ route('virtual.destroy',['table'=>$modelNameLower,'id'=>$row->id]) }}" method="POST" class="inline-block delete-form">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-500 hover:text-red-400 delete-button" data-name="{{ $row->name ?? '' }}">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="{{ max(3, count($fields)) + 1 }}" class="px-6 py-6 text-center text-gray-400">No {{ $modelNameLower }} found.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
-                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span class="font-semibold text-gray-900 dark:text-white">1-10</span> of <span class="font-semibold text-gray-900 dark:text-white">{{ $rows->total() ?? 'N/A' }}</span></span>
-                @if(method_exists($rows,'links'))
-                    <div>{{ $rows->links() }}</div>
-                @endif
-            </nav>
-        </div>
+<div class="bg-gray-50 dark:bg-gray-900 p-6 min-h-screen">
+  <div class="max-w-screen-xl mx-auto">
+
+    {{-- Header --}}
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
+          {{ ucfirst($modelName) }}
+        </h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Browse a list of {{ strtolower($modelName) }}
+        </p>
+      </div>
+
+      <a href="{{ route('virtual.create', ['table' => $modelNameLower]) }}"
+         class="inline-flex items-center mt-3 md:mt-0 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+        <svg class="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 010 2h-5v5a1 1 0 01-2 0v-5H4a1 1 0 010-2h5V4a1 1 0 011-1z"
+                clip-rule="evenodd" />
+        </svg>
+        New {{ ucfirst($modelName) }}
+      </a>
     </div>
+
+    {{-- Table --}}
+<div class="flex-grow">
+  <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+    <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+      <tr>
+        <th class="px-2 py-3">ID</th>
+        @foreach($fields as $f)
+          @if(strtolower($f) !== 'id')
+            <th class="px-6 py-3">{{ ucfirst($f) }}</th>
+          @endif
+        @endforeach
+        <th class="px-6 py-3 text-right">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+      @forelse ($rows as $i => $row)
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+          <td class="px-6 py-4 font-medium">{{ $row->id ?? ('#' . ($i + 1)) }}</td>
+
+          @foreach($fields as $f)
+            @if(strtolower($f) !== 'id')
+              <td class="px-6 py-4 max-w-xs truncate" title="{{ $row->$f }}">
+                {{ Str::limit($row->$f, 60, '...') }}
+              </td>
+            @endif
+          @endforeach
+
+          {{-- Actions --}}
+          <td class="px-6 py-4 text-right relative">
+            <button type="button"
+                    id="dropdownMenuIconButton{{ $row->id }}"
+                    data-dropdown-toggle="dropdownMenu{{ $row->id }}"
+                    class="p-2 text-center text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 
+                           dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 4 15">
+                <path d="M3.5 1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0Zm0 6.041a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0Zm0 5.959a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0Z" />
+              </svg>
+            </button>
+
+            {{-- Dropdown --}}
+            <div id="dropdownMenu{{ $row->id }}"
+                 class="hidden absolute right-0 top-full mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow-lg 
+                        dark:bg-gray-700 dark:divide-gray-600 text-center z-[9999]">
+              <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                <li>
+                  <a href="{{ route('virtual.show', ['table'=>$modelNameLower,'id'=>$row->id]) }}"
+                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                    Show
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ route('virtual.edit', ['table'=>$modelNameLower,'id'=>$row->id]) }}"
+                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                    Edit
+                  </a>
+                </li>
+              </ul>
+              <div class="py-1 text-red-600">
+                <form action="{{ route('virtual.destroy', ['table'=>$modelNameLower,'id'=>$row->id]) }}"
+                      method="POST" class="delete-form">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit"
+                          class="w-full px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white delete-button"
+                          data-name="{{ $row->name ?? '' }}">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          </td>
+        </tr>
+      @empty
+        <tr>
+          <td colspan="{{ max(3, count($fields)) + 1 }}"
+              class="px-6 py-6 text-center text-gray-400">
+            No {{ strtolower($modelName) }} found.
+          </td>
+        </tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+    {{-- Pagination --}}
+    <div class="p-4 mt-4 text-sm text-gray-600 dark:text-gray-300 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-200 dark:border-gray-700 rounded-b-lg">
+      <span>
+        Showing <strong>{{ $rows->count() }}</strong> of <strong>{{ $rows->total() }}</strong> results
+      </span>
+
+      <div class="flex items-center flex-wrap gap-2">
+        {{-- Prev --}}
+        @if ($rows->onFirstPage())
+          <span class="px-3 py-1 text-gray-400 border border-gray-300 rounded-full dark:border-gray-600 dark:text-gray-500">‹ Prev</span>
+        @else
+          <a href="{{ $rows->previousPageUrl() }}"
+             class="px-3 py-1 border border-gray-300 rounded-full hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">
+            ‹ Prev
+          </a>
+        @endif
+
+        {{-- Pages --}}
+        @foreach ($rows->getUrlRange(1, $rows->lastPage()) as $page => $url)
+          @if ($page == $rows->currentPage())
+            <span class="px-3 py-1 bg-blue-600 text-white border border-blue-600 rounded-full">{{ $page }}</span>
+          @else
+            <a href="{{ $url }}"
+               class="px-3 py-1 border border-gray-300 rounded-full hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">
+              {{ $page }}
+            </a>
+          @endif
+        @endforeach
+
+        {{-- Next --}}
+        @if ($rows->hasMorePages())
+          <a href="{{ $rows->nextPageUrl() }}"
+             class="px-3 py-1 border border-gray-300 rounded-full hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">
+            Next ›
+          </a>
+        @else
+          <span class="px-3 py-1 text-gray-400 border border-gray-300 rounded-full dark:border-gray-600 dark:text-gray-500">Next ›</span>
+        @endif
+      </div>
+    </div>
+
+  </div>
 </div>
 
 @endsection
 
+
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const name = form.querySelector('.delete-button').dataset.name || 'this {{$modelNameLower}}';
-                swal({
-                    title: `Delete ${name}?`,
-                    text: "This action cannot be undone.",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willDelete) => {
-                    if (willDelete) form.submit();
-                });
-            });
-        });
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.delete-form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = form.querySelector('.delete-button').dataset.name || 'this {{ $modelNameLower }}';
+      swal({
+        title: `Delete ${name}?`,
+        text: "This action cannot be undone.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) form.submit();
+      });
     });
+  });
+});
 </script>
 @endsection

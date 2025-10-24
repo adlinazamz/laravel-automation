@@ -1,14 +1,6 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="ml-8 text-xl font-semibold text-white">
-            {{ __('Products') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full h-full mx-auto px-4 lg:px-8">
             @yield('content')
-        </div>
     </div>
 </x-app-layout>
 

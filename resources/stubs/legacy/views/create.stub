@@ -1,28 +1,56 @@
 @extends('{{modelNameLower}}.layout')
 @section('content')
 
-<div class="max-w-2xl mx-auto mt-10 bg-white shadow-md rounded-lg">
-  <h2 class="text-xl font-semibold bg-gray-100 px-6 py-4 rounded-t-lg">Add New {{modelName}}</h2>
-  <div class="px-6 py-4">
+<div class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+  <div class="mx-auto max-w-screen-md px-4 lg:px-6">
+    <div class="bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
 
-    <div class="flex justify-end mb-4">
-      <a href="{{ route('{{modelNameLower}}.index') }}" class="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-2 rounded inline-flex items-center">
-        <i class="fa fa-arrow-left mr-1"></i> Back to {{modelName}}
-      </a>
-    </div>
-
-    <form action="{{ route('{{modelNameLower}}.store') }}" method="POST" enctype="multipart/form-data">
-      @csrf
-
-      {{formFields}}
-
-      {{-- Submit --}}
-      <div class="flex justify-end">
-        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded inline-flex items-center">
-          <i class="fa-solid fa-floppy-disk mr-1"></i> Submit
-        </button>
+      {{-- Header --}}
+      <div class="p-5 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Add New {{modelNameLower}}
+        </h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Fill out the details below to create a new {{modelNameLower}}.
+        </p>
       </div>
-    </form>
+
+      {{-- Form --}}
+      <div class="p-6">
+        <div class="flex justify-end mb-5">
+          <a href="{{ route('{{modelNameLower}}.index') }}"
+             class="inline-flex items-center text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 
+                    focus:ring-4 focus:ring-gray-200 rounded-lg px-3 py-1.5 
+                    dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to {{modelNameLower}}
+          </a>
+        </div>
+
+        <form action="{{ route('{{modelNameLower}}.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+          @csrf
+
+          {{-- Generated form fields --}}
+          <div class="space-y-5">
+              {{formFields}}
+          </div>
+
+          <div class="flex justify-end">
+            <button type="submit"
+              class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 
+                     focus:ring-4 focus:ring-blue-300 rounded-lg transition dark:focus:ring-blue-800">
+              <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
+
 @endsection

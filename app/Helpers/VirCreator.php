@@ -79,143 +79,136 @@ class VirCreator
         return implode("\n", $fields);
     }
 
-    public function generateFormFields($columns, $mode = 'create', $modelNameLower = '', $row = null)
+   public function generateFormFields($columns, $mode = 'create', $modelNameLower = '', $row = null)
 {
     $fields = [];
 
     foreach ($columns as $col) {
         $name = $col->Field;
         $type = $col->Type;
+        $label = ucfirst(str_replace('_', ' ', $name));
 
         // Skip system fields
-        if (in_array($name, ['id', 'created_at', 'updated_at'])) {
-            continue;
-        }
+        if (in_array($name, ['id', 'created_at', 'updated_at'])) continue;
 
         // Determine input type
         $inputType = 'text';
+        $isDate = false;
+        $isCheckbox = false;
+        $enableTime = false;
+
         if (Str::startsWith($type, 'int')) {
             $inputType = 'number';
-        } elseif (Str::startsWith($type, 'date')) {
-            $inputType = 'date';
         } elseif (Str::startsWith($type, ['tinyint(1)', 'boolean'])) {
             $inputType = 'checkbox';
+            $isCheckbox = true;
+        } elseif (Str::startsWith($type, ['date', 'datetime', 'timestamp'])) {
+            $isDate = true;
+            $enableTime = Str::contains($type, ['datetime', 'timestamp']);
         }
-            $isDate = false;
-            if (Str::startsWith($type, 'int')) {
-                $inputType = 'number';
-            } elseif (Str::startsWith($type, 'date')) {
-                // Use a text input and mark it with .datepicker so bootstrap-datepicker
-                // can attach a calendar UI. Native type=date may not use the bootstrap
-                // widget consistently across browsers.
-                $inputType = 'text';
-                $isDate = true;
-            } elseif (Str::startsWith($type, ['tinyint(1)', 'boolean'])) {
-                $inputType = 'checkbox';
-            }
 
-        // Get value for edit mode
+        // Value for edit mode
         $value = ($mode === 'edit' && $row) ? ($row->$name ?? '') : '';
+        $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
-        // Handle text areas
         if (Str::contains($type, ['text', 'blob'])) {
-            $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-
-                        $fieldHTML = <<<HTML
-<div class="mb-4">
-    <label for="input{$name}" class="block text-sm font-medium text-gray-200 mb-1">{$name}:</label>
-    <textarea
-            name="{$name}"
-            id="input{$name}"
-            placeholder="{$name}"
-            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 @error('{$name}') border-red-500 @enderror"
-    >{$safeValue}</textarea>
-</div>
-HTML;
+            $fieldHTML = <<<HTML
+            <div class="mb-4">
+                <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}</label>
+                <textarea
+                    name="{$name}"
+                    id="{$name}"
+                    placeholder="{$label}"
+                    rows="4"
+                    class="w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 
+                           @error('{$name}') border-red-500 @enderror"
+                >{$safeValue}</textarea>
+            </div>
+            HTML;
         }
-        // Handle checkbox
-        elseif ($inputType === 'checkbox') {
+        elseif ($isCheckbox) {
             $checked = ($value == 1 || $value === true) ? 'checked' : '';
-
-                        $fieldHTML = <<<HTML
-<div class="mb-4 flex items-center">
-    <input
-            type="checkbox"
-            name="{$name}"
-            id="input{$name}"
-            {$checked}
-            class="mr-2 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-500 rounded"
-    >
-    <label for="input{$name}" class="text-sm font-medium text-gray-200">{$name}</label>
-</div>
-HTML;
+            $fieldHTML = <<<HTML
+            <div class="mb-4 flex items-center">
+                <input
+                    type="checkbox"
+                    name="{$name}"
+                    id="{$name}"
+                    {$checked}
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded bg-gray-700"
+                >
+                <label for="{$name}" class="ml-2 text-sm font-medium text-gray-700">{$label}</label>
+            </div>
+            HTML;
         }
-        // Default text/number/date inputs
+
+        // 🟢 DATE / DATETIME (Flatpickr-enabled)
+        elseif ($isDate) {
+            $timeAttr = $enableTime ? 'data-enable-time="true"' : '';
+            $fieldHTML = <<<HTML
+            <div class="mb-4">
+                <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}</label>
+                <div class="relative">
+                    <input
+                        type="text"
+                        name="{$name}"
+                        id="{$name}"
+                        value="{$safeValue}"
+                        placeholder="Select {$label}"
+                        class="datepicker w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 pr-10 
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 
+                               @error('{$name}') border-red-500 @enderror"
+                        autocomplete="off"
+                        data-fp-init="false"
+                        {$timeAttr}
+                    >
+                    <button type="button" 
+                            class="datepicker-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300"
+                            data-target="#{$name}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            HTML;
+        }
+
+        // 🟢 DEFAULT INPUT
         else {
-                        $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-
-                        // For date fields, add the 'datepicker' class and a canonical data-date-format
-                        $dateClass = $isDate ? ' datepicker' : '';
-                        $dateAttr = $isDate ? ' data-date-format="yyyy-mm-dd"' : '';
-
-                                                // If this is a date input, render with a calendar icon wrapper so we can
-                                                // provide a visible affordance that opens the datepicker.
-                                        if ($isDate) {
-                                                            $fieldHTML = <<<HTML
-                                <div class="mb-4">
-                                    <label for="input{$name}" class="block text-sm font-medium text-gray-200 mb-1">{$name}:</label>
-                                    <div class="relative">
-                                        <input
-                                            type="{$inputType}"
-                                            name="{$name}"
-                                            id="input{$name}"
-                                            placeholder="{$name}"
-                                            value="{$safeValue}"
-                                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary-600 @error('{$name}') border-red-500 @enderror datepicker"
-                                            data-date-format="yyyy-mm-dd"
-                                        >
-                                        <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 js-datepicker-toggle" data-target="#input{$name}" aria-label="Open date picker">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z"/></svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                HTML;
-                                                        } else {
-                                                            $fieldHTML = <<<HTML
-                                <div class="mb-4">
-                                    <label for="input{$name}" class="block text-sm font-medium text-gray-200 mb-1">{$name}:</label>
-                                    <input
-                                            type="{$inputType}"
-                                            name="{$name}"
-                                            id="input{$name}"
-                                            placeholder="{$name}"
-                                            value="{$safeValue}"
-                                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 @error('{$name}') border-red-500 @enderror"
-                                    >
-                                </div>
-                                HTML;
-                                                        }
+            $fieldHTML = <<<HTML
+            <div class="mb-4">
+                <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}</label>
+                <input
+                    type="{$inputType}"
+                    name="{$name}"
+                    id="{$name}"
+                    value="{$safeValue}"
+                    placeholder="Enter {$label}"
+                    class="w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 
+                           @error('{$name}') border-red-500 @enderror"
+                >
+            </div>
+            HTML;
         }
 
         $fields[] = $fieldHTML;
     }
 
+    // Combine
     $out = implode("\n", $fields);
 
-    // Dump generated form HTML to storage for debugging (virtual generator)
     try {
         $debugPath = storage_path("debug_virtual_" . ($modelNameLower ?: 'form') . ".html");
         file_put_contents($debugPath, $out);
-        Log::info('VirCreator: dumped generated form to', ['path' => $debugPath]);
     } catch (\Throwable $e) {
         Log::warning('VirCreator: failed to write debug form file', ['err' => $e->getMessage()]);
     }
 
     return $out;
 }
-
-
-
     /**
      * Virtual generic CRUD handler.
      */
@@ -267,11 +260,11 @@ HTML;
             if ($val === '') continue;
 
             $normalized = null;
-            // try strict formats first
+            // try common formats first (accept parse even if string formatting differs)
             foreach ($formats as $fmt) {
                 try {
                     $dt = Carbon::createFromFormat($fmt, $val);
-                    if ($dt && $dt->format($fmt) === $val) {
+                    if ($dt) {
                         $normalized = $dt->format('Y-m-d');
                         break;
                     }
@@ -348,12 +341,42 @@ HTML;
     protected static function renderForm(string $table, array $fields): string
 {
     $html = '';
+
+    // Build a quick map of column types so we can render date inputs when needed
+    try {
+        $schema = self::getSchema($table);
+        $typeMap = [];
+        foreach ($schema as $c) {
+            $typeMap[$c->Field] = $c->Type ?? '';
+        }
+    } catch (\Throwable $e) {
+        $typeMap = [];
+    }
+
     foreach ($fields as $name) {
         if (in_array($name, ['id', 'created_at', 'updated_at'])) continue;
-        $html .= "<div class='mb-4'>\n";
-        $html .= "  <label class='block mb-1 text-sm font-medium text-gray-200'>{$name}</label>\n";
-        $html .= "  <input name='{$name}' class='w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2' placeholder='{$name}'>\n";
-        $html .= "</div>\n";
+        $label = ucfirst($name);
+        $colType = strtolower($typeMap[$name] ?? '');
+
+        // Render a date input when the column type looks like date/datetime/timestamp
+        if (str_starts_with($colType, 'date') || str_contains($colType, 'datetime') || str_contains($colType, 'timestamp')) {
+            $html .= "<div class='mb-4'>\n";
+            $html .= "  <label for='{$name}' class='block text-sm font-medium text-gray-200 mb-1'>{$label}</label>\n";
+            $html .= "  <div class='relative'>\n";
+            $html .= "    <input type='text' name='{$name}' id='{$name}' value='' placeholder='Select {$label}' class='datepicker w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500' autocomplete='off' data-fp-init='false'>\n";
+            $html .= "    <button type='button' class='datepicker-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300' data-target='#{$name}'>\n";
+            $html .= "      <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' viewBox='0 0 20 20' fill='currentColor'>\n";
+            $html .= "        <path d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z'/>\n";
+            $html .= "      </svg>\n";
+            $html .= "    </button>\n";
+            $html .= "  </div>\n";
+            $html .= "</div>\n";
+        } else {
+            $html .= "<div class='mb-4'>\n";
+            $html .= "  <label class='block mb-1 text-sm font-medium text-gray-200'>{$name}</label>\n";
+            $html .= "  <input name='{$name}' class='w-full bg-gray-700 text-gray-100 border border-gray-600 rounded px-3 py-2' placeholder='{$name}'>\n";
+            $html .= "</div>\n";
+        }
     }
 
     Log::info('Rendered HTML length', ['table'=>$table, 'length'=>strlen($html)]);

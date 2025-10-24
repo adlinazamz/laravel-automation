@@ -632,6 +632,36 @@
     },
     "components": {
         "schemas": {
+            "Event": {
+                "title": "Event",
+                "required": [
+                    "name",
+                    "description",
+                    "date_start",
+                    "date_end"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Example"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Example"
+                    },
+                    "date_start": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-01-01"
+                    },
+                    "date_end": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-01-01"
+                    }
+                },
+                "type": "object"
+            },
             "Product": {
                 "title": "Product",
                 "required": [
