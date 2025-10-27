@@ -58,4 +58,3 @@ Route::prefix('api/virtual')->middleware('auth:api')->group(function () {
     Route::put('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'update']);
     Route::delete('/{table}/{id}', [App\Http\Controllers\Api\VirtualApiController::class, 'destroy']);
 });
-

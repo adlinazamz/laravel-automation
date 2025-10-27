@@ -112,6 +112,12 @@ class FileCreator{
         $value = ($mode === 'edit' && $row) ? ($row->$name ?? '') : '';
         $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
+        if ($mode === 'edit'){
+            $safeValue = "{{ old('{$name}', \${$modelNameLower}->{$name}) }}";
+        }else{
+            $safeValue = "{{ old('{$name}') }}";
+        }
+
         if (Str::contains($type, ['text', 'blob'])) {
             $fieldHTML = <<<HTML
             <div class="mb-4">

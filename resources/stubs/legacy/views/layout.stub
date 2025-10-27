@@ -1,5 +1,23 @@
 <x-app-layout>
     <div class="w-full h-full mx-auto px-4 lg:px-8">
-            @yield('content')
+        @yield('content')
     </div>
+
+    {{-- Datepicker and related scripts --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">s
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('input.datepicker').forEach(function (el) {
+            if (!el.dataset.fpInit || el.dataset.fpInit === 'false') {
+                flatpickr(el, {
+                    enableTime: el.dataset.enableTime === 'true',
+                    dateFormat: el.dataset.enableTime === 'true' ? 'Y-m-d H:i' : 'Y-m-d'
+                });
+                el.dataset.fpInit = 'true';
+            }
+        });
+    });
+    </script>
 </x-app-layout>
