@@ -143,7 +143,7 @@ class VirCreator
             HTML;
         }
 
-        // 🟢 DATE / DATETIME (Flatpickr-enabled)
+        //DATE / DATETIME (Flatpickr-enabled)
         elseif ($isDate) {
             $timeAttr = $enableTime ? 'data-enable-time="true"' : '';
             $fieldHTML = <<<HTML
@@ -163,19 +163,21 @@ class VirCreator
                         data-fp-init="false"
                         {$timeAttr}
                     >
+                <!--
                     <button type="button" 
-                            class="datepicker-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300"
+                            class="datepicker-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300 z-10"
                             data-target="#{$name}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z"/>
                         </svg>
                     </button>
+                -->
                 </div>
             </div>
             HTML;
         }
 
-        // 🟢 DEFAULT INPUT
+        //DEFAULT INPUT
         else {
             $fieldHTML = <<<HTML
             <div class="mb-4">

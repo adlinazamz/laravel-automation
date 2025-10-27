@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Helpers;
-\Log::info('⚙️ FileCreator actually loaded from: ' . __FILE__);
+\Log::info('FileCreator actually loaded from: ' . __FILE__);
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
@@ -80,100 +80,145 @@ class FileCreator{
         return ['swaggerRequired' =>implode(', ', $required),
                 'swaggerProperties'=> implode (', ', $properties)];
     }
-    public function generateFormFields($columns, $mode = 'create', $modelNameLower = '')
+   public function generateFormFields($columns, $mode = 'create', $modelNameLower = '', $row = null)
 {
     $fields = [];
 
-        foreach ($columns as $col) {
-            $name = $col->Field;
-            $type = $col->Type;
-            $nullable = $col->Null === 'YES';
+    foreach ($columns as $col) {
+        $name = $col->Field;
+        $type = $col->Type;
+        $label = ucfirst(str_replace('_', ' ', $name));
 
-            // Skip default timestamp/id columns
-            if (in_array($name, ['id', 'created_at', 'updated_at'])) {
-                continue;
-            }
+        // Skip system fields
+        if (in_array($name, ['id', 'created_at', 'updated_at'])) continue;
 
-            // Determine input type
-            $inputType = 'text';
-            $isDate = false;
-            if (Str::startsWith($type, 'int')) {
-                $inputType = 'number';
-            } elseif (Str::startsWith($type, 'date') || Str::contains($type, 'datetime') || Str::contains($type, 'timestamp')) {
-                $isDate = true;
-            }
+        // Determine input type
+        $inputType = 'text';
+        $isDate = false;
+        $isCheckbox = false;
+        $enableTime = false;
 
-            // Handle edit mode (pre-fill value)
-            $valueAttr = '';
-            if ($mode === 'edit') {
-                $valueAttr = "value=\"{{ \${$modelNameLower}->${name} }}\"";
-            }
-
-            // Add unified Tailwind styling for both light & dark mode
-            if ($isDate) {
-                // Render a flatpickr-compatible text input with toggle button to keep legacy UI consistent
-                $fields[] = <<<HTML
-        <div class="mb-4">
-            <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}:</label>
-            <div class="relative">
-                <input
-                    type="text"
-                    name="{$name}"
-                    id="{$name}"
-                    placeholder="dd/mm/yyyy"
-                    {$valueAttr}
-                    class="datepicker w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 pr-10 
-                               focus:outline-none focus:ring-2 focus:ring-blue-500 
-                               @error('{$name}') border-red-500 @enderror"
-                    autocomplete="off"
-                    data-fp-init="false"
-                    data-alt-format="d/m/Y"
-                >
-                <button type="button" class="datepicker-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300" data-target="#{$name}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z"/>
-                    </svg>
-                </button>
-            </div>
-            @error('{$name}')
-                <p class="text-sm text-red-600 mt-1">{{ \$message }}</p>
-            @enderror
-        </div>
-        HTML;
-            } else {
-                $fields[] = <<<HTML
-        <div class="mb-4">
-            <label for="input{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$name}:</label>
-            <input
-                type="{$inputType}"
-                name="{$name}"
-                id="input{$name}"
-                placeholder="{$name}"
-                {$valueAttr}
-                class="w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 
-                       border border-gray-300 dark:border-gray-600 rounded px-3 py-2 
-                       focus:outline-none focus:ring-2 focus:ring-blue-500 
-                       @error('{$name}') border-red-500 @enderror"
-            >
-            @error('{$name}')
-                <p class="text-sm text-red-600 mt-1">{{ \$message }}</p>
-            @enderror
-        </div>
-        HTML;
-            }
+        if (Str::startsWith($type, 'int')) {
+            $inputType = 'number';
+        } elseif (Str::startsWith($type, ['tinyint(1)', 'boolean'])) {
+            $inputType = 'checkbox';
+            $isCheckbox = true;
+        } elseif (Str::startsWith($type, ['date', 'datetime', 'timestamp'])) {
+            $isDate = true;
+            $enableTime = Str::contains($type, ['datetime', 'timestamp']);
         }
 
-    return implode("\n", $fields);
+        // Value for edit mode
+        $value = ($mode === 'edit' && $row) ? ($row->$name ?? '') : '';
+        $safeValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+
+        if (Str::contains($type, ['text', 'blob'])) {
+            $fieldHTML = <<<HTML
+            <div class="mb-4">
+                <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}</label>
+                <textarea
+                    name="{$name}"
+                    id="{$name}"
+                    placeholder="{$label}"
+                    rows="4"
+                    class="w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 
+                           @error('{$name}') border-red-500 @enderror"
+                >{$safeValue}</textarea>
+            </div>
+            HTML;
+        }
+        elseif ($isCheckbox) {
+            $checked = ($value == 1 || $value === true) ? 'checked' : '';
+            $fieldHTML = <<<HTML
+            <div class="mb-4 flex items-center">
+                <input
+                    type="checkbox"
+                    name="{$name}"
+                    id="{$name}"
+                    {$checked}
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded bg-gray-700"
+                >
+                <label for="{$name}" class="ml-2 text-sm font-medium text-gray-700">{$label}</label>
+            </div>
+            HTML;
+        }
+        
+        //DATE / DATETIME (Flatpickr-enabled)
+        elseif ($isDate) {
+            $timeAttr = $enableTime ? 'data-enable-time="true"' : '';
+            $fieldHTML = <<<HTML
+            <div class="mb-4">
+                <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}</label>
+                <div class="relative">
+                    <input
+                        type="text"
+                        name="{$name}"
+                        id="{$name}"
+                        value="{$safeValue}"
+                        placeholder="Select {$label}"
+                        class="datepicker w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 pr-10 
+                               focus:outline-none focus:ring-2 focus:ring-blue-500 
+                               @error('{$name}') border-red-500 @enderror"
+                        autocomplete="off"
+                        data-fp-init="false"
+                        {$timeAttr}
+                    >
+                <!--
+                    <button type="button" 
+                            class="datepicker-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300 z-10"
+                            data-target="#{$name}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v6H4V8z"/>
+                        </svg>
+                    </button>
+                -->
+                </div>
+            </div>
+            HTML;
+        }
+
+        //DEFAULT INPUT
+        else {
+            $fieldHTML = <<<HTML
+            <div class="mb-4">
+                <label for="{$name}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{$label}</label>
+                <input
+                    type="{$inputType}"
+                    name="{$name}"
+                    id="{$name}"
+                    value="{$safeValue}"
+                    placeholder="Enter {$label}"
+                    class="w-full bg-gray-400 dark:bg-gray-700 text-gray-700 dark:text-gray-400 border border-gray-700 rounded-lg px-3 py-2 
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 
+                           @error('{$name}') border-red-500 @enderror"
+                >
+            </div>
+            HTML;
+        }
+
+        $fields[] = $fieldHTML;
+    }
+
+    // Combine
+    $out = implode("\n", $fields);
+
+    try {
+        $debugPath = storage_path("debug_virtual_" . ($modelNameLower ?: 'form') . ".html");
+        file_put_contents($debugPath, $out);
+    } catch (\Throwable $e) {
+        Log::warning('VirCreator: failed to write debug form file', ['err' => $e->getMessage()]);
+    }
+
+    return $out;
 }
-
-
     public function generateTableHeaders($columns){
         $headers=[];
         foreach ($columns as $col){
             $name =$col ->Field;
             if (in_array($name, ['id']))
                 continue;
-            $headers[] = "<th class =\"border px-4 py-2 text-center text-sm font-medium text-gray-700\">" . ucfirst($name) . "</th>";
+            $headers[] = "<th class =\"px-4 py-2 text-center text-xs text-sm font-medium text-gray-700 dark:text-gray-300\">" . ucfirst($name) . "</th>";
         }
         return implode("\n", $headers);
     }
@@ -183,7 +228,7 @@ class FileCreator{
             $name =$col->Field;
             if (in_array($name, ['id']))
                 continue;
-            $rows[]="<td class=\"border px-4 py-2 text-sm text-gray-800\">
+            $rows[]="<td class=\" px-4 py-2 text-sm text-gray-700 dark:text-gray-300\">
             {{ \${$modelNameLower}->{$name} }}
              </td>";
         }

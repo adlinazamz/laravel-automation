@@ -1,6 +1,12 @@
 @extends('virtual::layout')
 @section('content')
 
+@if (session('success'))
+    <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+        {{ session('success') }}
+    </div>
+@endif
+
 <div class="bg-gray-50 dark:bg-gray-900 p-6 min-h-screen">
   <div class="max-w-screen-xl mx-auto">
 
@@ -31,7 +37,7 @@
   <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
     <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
       <tr>
-        <th class="px-2 py-3">ID</th>
+        <th class="px-2 py-3 text-center">ID</th>
         @foreach($fields as $f)
           @if(strtolower($f) !== 'id')
             <th class="px-6 py-3">{{ ucfirst($f) }}</th>

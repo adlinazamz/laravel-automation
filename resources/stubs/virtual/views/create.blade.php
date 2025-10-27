@@ -47,7 +47,6 @@
 </div>
 
 @push('scripts')
-<!-- Virtual forms rely on the global flatpickr initializer in layouts/app.blade.php -->
 @endpush
 
 @endsection

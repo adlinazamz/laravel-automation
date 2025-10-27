@@ -147,22 +147,45 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
   function initFlatpickrOn(el) {
-    if (!el || el.dataset.fpInit === 'true') return;
-    // determine if we need time
-    const enableTime = el.getAttribute('data-enable-time') === 'true';
-    // allow per-input display format via data-alt-format (e.g. 'd/m/Y') while keeping internal ISO storage
-    const altFormat = el.getAttribute('data-alt-format') || 'd/m/Y';
-    const opts = Object.assign({}, fpOptionsBase, {
-      altInput: true,
-      altFormat: altFormat
-    }, enableTime ? { enableTime: true, time_24hr: true, dateFormat: "Y-m-d H:i", altFormat: el.getAttribute('data-alt-format') || 'd/m/Y H:i' } : {});
-    try {
-      flatpickr(el, opts);
-      el.dataset.fpInit = 'true';
-    } catch (e) {
-      console.error('flatpickr init error for', el, e);
+  if (!el || el.dataset.fpInit === 'true') return;
+
+  const enableTime = el.getAttribute('data-enable-time') === 'true';
+  const altFormat = el.getAttribute('data-alt-format') || 'd/m/Y';
+
+  const opts = Object.assign({}, fpOptionsBase, {
+    altInput: true,
+    altFormat: altFormat,
+    onChange: function(selectedDates, dateStr, instance) {
+      // Always reflect the actual date string in the visible input (alt field)
+      if (instance.altInput && instance.altInput !== el) {
+        instance.altInput.value = instance.formatDate(selectedDates[0], altFormat);
+      } else {
+        el.value = dateStr;
+      }
+    },
+    onValueUpdate: function(selectedDates, dateStr, instance) {
+      // Ensure both altInput and original input stay in sync
+      if (instance.altInput && instance.altInput !== el) {
+        instance.altInput.value = instance.formatDate(selectedDates[0], altFormat);
+      }
+      el.value = dateStr;
     }
+  }, enableTime ? {
+    enableTime: true,
+    time_24hr: true,
+    dateFormat: "Y-m-d H:i",
+    altFormat: el.getAttribute('data-alt-format') || 'd/m/Y H:i'
+  } : {});
+
+  try {
+    const fp = flatpickr(el, opts);
+    el._flatpickr = fp; // ensure reference always exists
+    el.dataset.fpInit = 'true';
+  } catch (e) {
+    console.error('flatpickr init error for', el, e);
   }
+}
+
 
   // initialize any existing inputs (be permissive: include inputs that may be missing the data-fp-init attr)
   // Also auto-tag inputs that look like date fields (name/id/placeholder containing 'date')
