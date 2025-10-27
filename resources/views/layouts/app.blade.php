@@ -58,17 +58,17 @@
             <!-- Right: Auth user dropdown -->
             <div class="flex items-center space-x-4">
                 <!-- Theme toggle -->
-                <!--<button id="theme-toggle" aria-label="Toggle theme" -->
-                    <!--    class="inline-flex items-center p-2 rounded-md text-gray-600 bg-white hover:text-gray-800 dark:bg-gray-700 dark:text-gray-200">-->
+                <button id="theme-toggle" aria-label="Toggle theme">
+                        <class= "inline-flex items-center p-2 rounded-md text-gray-600 bg-white hover:text-gray-800 dark:bg-gray-700 dark:text-gray-200">
                     <!-- Light icon -->
-                    <!--<svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">-->
-                     <!--   <path d="M10 3.22a.75.75 0 01.75-.72h0a.75.75 0 01.75.72V5a.75.75 0 01-.75.72h0A.75.75 0 0110 5V3.22zM10 15.78a.75.75 0 01.75.72v1.78a.75.75 0 01-.75.72h0a.75.75 0 01-.75-.72v-1.78c0-.4.34-.72.75-.72zM3.22 10a.75.75 0 01-.72-.75v0a.75.75 0 01.72-.75H5a.75.75 0 01.72.75v0A.75.75 0 015 10H3.22zM15.78 10a.75.75 0 01.72-.75h0a.75.75 0 01.72.75V10a.75.75 0 01-.72.75h0A.75.75 0 0115.78 10zM5.64 5.64a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28L6.1 6.54a.75.75 0 01-1.06-1.06l.6-.6zM13.9 13.9a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28l-.6.6a.75.75 0 01-1.06-1.06l.6-.6zM5.64 14.36a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28l-.6.6a.75.75 0 01-1.06-1.06l.6-.6zM13.9 6.1a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28l-.6.6a.75.75 0 01-1.06-1.06l.6-.6z"/>-->
-                    <!--</svg>-->
+                    <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+                     <path d="M10 3.22a.75.75 0 01.75-.72h0a.75.75 0 01.75.72V5a.75.75 0 01-.75.72h0A.75.75 0 0110 5V3.22zM10 15.78a.75.75 0 01.75.72v1.78a.75.75 0 01-.75.72h0a.75.75 0 01-.75-.72v-1.78c0-.4.34-.72.75-.72zM3.22 10a.75.75 0 01-.72-.75v0a.75.75 0 01.72-.75H5a.75.75 0 01.72.75v0A.75.75 0 015 10H3.22zM15.78 10a.75.75 0 01.72-.75h0a.75.75 0 01.72.75V10a.75.75 0 01-.72.75h0A.75.75 0 0115.78 10zM5.64 5.64a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28L6.1 6.54a.75.75 0 01-1.06-1.06l.6-.6zM13.9 13.9a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28l-.6.6a.75.75 0 01-1.06-1.06l.6-.6zM5.64 14.36a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28l-.6.6a.75.75 0 01-1.06-1.06l.6-.6zM13.9 6.1a.75.75 0 01.53-.22h0a.75.75 0 01.53 1.28l-.6.6a.75.75 0 01-1.06-1.06l.6-.6z"/>-->
+                    </svg>
                     <!-- Dark icon -->
-                    <!--<svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">-->
-                       <!-- <path d="M17.293 13.293A8 8 0 116.707 2.707a7 7 0 1010.586 10.586z"/>-->
-                    <!--</svg>-->
-               <!-- </button>-->
+                    <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M17.293 13.293A8 8 0 116.707 2.707a7 7 0 1010.586 10.586z"/>
+                    </svg>
+                </button>
 
                 @auth
                     <x-dropdown align="right" width="48">

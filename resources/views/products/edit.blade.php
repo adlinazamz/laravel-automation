@@ -53,6 +53,9 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
                 </svg>
               </button>
+              {{-- Hidden actual input --}}
+  <input type="hidden" name="type" id="typeInput" value="{{ old('type', $product->type) }}">
+
               <div id="typeDropdownMenu"
                    class="hidden absolute z-10 mt-2 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg transition-all">
                    <ul id="typeList" class="max-h-48 overflow-y-auto">
