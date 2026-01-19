@@ -40,8 +40,8 @@ A Laravel-powered automation platform for product management, supporting two ope
 - **Modern Frontend**: Inertia.js with Alpine.js, Tailwind CSS, and ApexCharts for dashboards.
 - **PDF Generation**: DomPDF for report exports.
 - **Two Modes**:
-  - **Virtual Mode**: Dynamic API and UI generation without physical files.
-  - **Legacy Mode**: Traditional file-based CRUD generation.
+  - **Virtual Mode**: Dynamic API and UI generation without physical files from migration.
+  - **Legacy Mode**: Traditional file-based CRUD generation from migration.
 - **Mock Data**: Factories for generating test data (e.g., `ProductFactory`, `UserFactory`).
 
 ## Installation
@@ -95,28 +95,28 @@ Access the application via your browser. Use the sidebar navigation for product 
 - Authenticate using Sanctum or JWT tokens.
 
 ### Commands
-- **Legacy Mode**: Generate CRUD files for a model:
-  ```bash
-  php artisan auto:crud Product
-  ```
+- **Legacy Mode**: Generate physical CRUD files for a model based on the migration.
 - **Virtual Mode**: Register a virtual table dynamically (handled internally by `VirtualApiManager`).
 
 ## Modes Explained
 
 ### Legacy Mode (With Boilerplate)
-This mode generates physical files for models, controllers, views, routes, and migrations. It's ideal for traditional Laravel development where you need full control and customization.
+This mode generates physical files for models, controllers, views, routes, and migrations. It's ideal for traditional Laravel development where you need full control and additional customization between items.
 
 **Relevant Files**:
 - `app/Console/Commands/CrudCommand.php`: Artisan command to generate CRUD.
 - `app/Helpers/FileCreator.php`: Handles file creation for models, controllers, etc.
+- `resource/stub/legacy`: Handles the stub formatiing for the physicalk files creation
 - Generated files: `app/Models/`, `app/Http/Controllers/`, `resources/views/`, `routes/`.
 
 **Why Use It**: When you need persistent, editable code files for complex logic.
 
-**How It Works**: Run `php artisan auto:crud <ModelName>` to scaffold all necessary files.
+**How It Works**: Choose 'legacy' in the drop down laravel crud in the UI, and select the migration table to generate the boilerplate for the  table.
+
+***Notes***: This will create the files physically in the codebase.
 
 ### Virtual Mode (No Boilerplate)
-This mode dynamically creates APIs, forms, and views from database schema without generating files. It uses runtime rendering for a flexible, low-code approach.
+This mode dynamically creates forms, and views from database schema without generating files. It uses runtime rendering for a flexible, low-code approach.
 
 **Relevant Files**:
 - `app/Helpers/VirtualApiManager.php`: Manages virtual API registration and Swagger integration.
@@ -126,7 +126,9 @@ This mode dynamically creates APIs, forms, and views from database schema withou
 
 **Why Use It**: For rapid prototyping, dynamic tables, or when minimizing codebase size.
 
-**How It Works**: Call `VirtualApiManager::registerVirtualTable('table_name')` to expose a DB table as an API endpoint with auto-generated docs.
+**How It Works**: Choose virtual in the web UI and choose the corresponding table. The new change will be reflected to the sidebar.
+
+***Note***: No physical file will be created in the codebase as it is by appending the blade.php file instead of create.
 
 ## API Documentation
 
