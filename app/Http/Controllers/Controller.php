@@ -14,7 +14,7 @@ use Illuminate\Routing\Controller as BaseController;
     description: "API documentation for the Product application"
 )]
 #[OA\Server(
-    url: "http://book_store.test",
+    url: "http://laravel-automation.test",
     //url: "http://localhost:8000",
     description: "Local API server"
 )]

@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://book_store.test",
+            "url": "http://laravel-automation.test",
             "description": "Local API server"
         }
     ],
