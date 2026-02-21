@@ -106,7 +106,7 @@ This mode generates physical files for models, controllers, views, routes, and m
 **Relevant Files**:
 - `app/Console/Commands/CrudCommand.php`: Artisan command to generate CRUD.
 - `app/Helpers/FileCreator.php`: Handles file creation for models, controllers, etc.
-- `resource/stub/legacy`: Handles the stub formatiing for the physicalk files creation
+- `resource/stub/legacy`: Handles the stub formating for the physical files creation
 - Generated files: `app/Models/`, `app/Http/Controllers/`, `resources/views/`, `routes/`.
 
 **Why Use It**: When you need persistent, editable code files for complex logic.
